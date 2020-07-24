@@ -64,9 +64,28 @@ while cont == False:
 #Begins Game
 makeGame()
 end = False
-pygame.draw.rect(gameDisplay, (255,255,255), (10, 10, 20, 20))
+avatX = 10
+avatY = 10
+avatDown = False
+avatUp = False
+avatRight = False
+avatLeft = False
 while end == False:
     clock.tick(60)
+    gameDisplay.fill((0,0,0))
+    pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
+
+    print(avatUp)    
+    if avatUp == True:
+        avatY = avatY - 1
+    elif avatDown == True:
+        avatY = avatY + 1
+    elif avatRight == True:
+        avatX = avatX + 1
+    elif avatLeft == True:
+        avatX = avatX - 1
+    
+    pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             end = True
@@ -80,10 +99,35 @@ while end == False:
                 pygame.font.quit()
                 quit()
             if event.key == pygame.K_UP:
-                print("PLACEHOLDER")
+                avatDown = False
+                avatRight = False
+                avatLeft = False
+                avatUp = True
+            if event.key == pygame.K_DOWN:
+                avatUp = False
+                avatRight = False
+                avatLeft = False
+                avatDown = True
+            if event.key == pygame.K_RIGHT:
+                avatDown = False
+                avatUp = False
+                avatLeft = False
+                avatRight = True
+            if event.key == pygame.K_LEFT:
+                avatDown = False
+                avatUp = False
+                avatRight = False
+                avatLeft = True
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                print("PLACEHOLDER")
+                avatUp = False
+            if event.key == pygame.K_DOWN:
+                avatDown = False
+            if event.key == pygame.K_RIGHT:
+                avatRight = False
+            if event.key == pygame.K_LEFT:
+                avatLeft = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
             if 250 < mx < 350:

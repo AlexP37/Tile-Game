@@ -1,17 +1,18 @@
 #Initialization
+import os
 import pygame
 import math
 import random
 pygame.init()
 pygame.font.init()
-display_width = 600
-display_height = 600
+display_width = 750
+display_height = 750
 black = (0,0,0)
 white = (255,255,255)
 red = (255,0,0)
 blue = (0,0,255)
 gameDisplay = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption('Choose Your Own Adventure')
+pygame.display.set_caption('Tile Based RPG')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
 
@@ -63,8 +64,7 @@ while cont == False:
 #Begins Game
 makeGame()
 end = False
-pygame.draw.rect(gameDisplay, (255,255,255), (250, 250, 100, 100))
-textBoxWhite("FINISH", 20, (300,300), (0,0,0))
+pygame.draw.rect(gameDisplay, (255,255,255), (10, 10, 20, 20))
 while end == False:
     clock.tick(60)
     for event in pygame.event.get():

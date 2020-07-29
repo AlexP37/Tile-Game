@@ -67,6 +67,9 @@ end = False
 avatX = 10
 avatY = 10
 
+enemyX = 720
+enemyY = 720
+
 avatDown = False
 avatUp = False
 avatRight = False
@@ -91,9 +94,9 @@ while end == False:
     if avatY > 749:
         avatY = -19
 
-    pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
+    pygame.draw.rect(gameDisplay, (0,255,255), (avatX, avatY, 20, 20))
+    pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, 20, 20))
 
-    print(avatUp)    
     if avatUp == True:
         avatY = avatY - speed
     elif avatDown == True:
@@ -103,7 +106,7 @@ while end == False:
     elif avatLeft == True:
         avatX = avatX - speed
     
-    pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             end = True

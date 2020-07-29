@@ -66,10 +66,16 @@ makeGame()
 end = False
 avatX = 10
 avatY = 10
+
 avatDown = False
 avatUp = False
 avatRight = False
 avatLeft = False
+avatLeftIn = False
+avatRightIn = False
+avatDownIn = False
+avatUpIn = False
+
 speed = 4
 while end == False:
     clock.tick(60)
@@ -111,21 +117,25 @@ while end == False:
                 pygame.font.quit()
                 quit()
             if event.key == pygame.K_UP:
+                avatUpIn = True
                 avatDown = False
                 avatRight = False
                 avatLeft = False
                 avatUp = True
             if event.key == pygame.K_DOWN:
+                avatDownIn = True
                 avatUp = False
                 avatRight = False
                 avatLeft = False
                 avatDown = True
             if event.key == pygame.K_RIGHT:
+                avatRightIn = True
                 avatDown = False
                 avatUp = False
                 avatLeft = False
                 avatRight = True
             if event.key == pygame.K_LEFT:
+                avatLeftIn = True
                 avatDown = False
                 avatUp = False
                 avatRight = False
@@ -133,13 +143,49 @@ while end == False:
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
+                avatUpIn = False
                 avatUp = False
+                if avatLeftIn == True:
+                    avatLeft = True
+                if avatRightIn == True:
+                    avatRight = True
+                if avatDownIn == True:
+                    avatDown = True
+                if avatUpIn == True:
+                    avatUp = True
             if event.key == pygame.K_DOWN:
+                avatDownIn = False
                 avatDown = False
+                if avatLeftIn == True:
+                    avatLeft = True
+                if avatRightIn == True:
+                    avatRight = True
+                if avatDownIn == True:
+                    avatDown = True
+                if avatUpIn == True:
+                    avatUp = True
             if event.key == pygame.K_RIGHT:
+                avatRightIn = False
                 avatRight = False
+                if avatLeftIn == True:
+                    avatLeft = True
+                if avatRightIn == True:
+                    avatRight = True
+                if avatDownIn == True:
+                    avatDown = True
+                if avatUpIn == True:
+                    avatUp = True
             if event.key == pygame.K_LEFT:
+                avatLeftIn = False
                 avatLeft = False
+                if avatLeftIn == True:
+                    avatLeft = True
+                if avatRightIn == True:
+                    avatRight = True
+                if avatDownIn == True:
+                    avatDown = True
+                if avatUpIn == True:
+                    avatUp = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
             if 250 < mx < 350:

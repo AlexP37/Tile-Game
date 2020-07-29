@@ -70,20 +70,32 @@ avatDown = False
 avatUp = False
 avatRight = False
 avatLeft = False
+speed = 4
 while end == False:
     clock.tick(60)
     gameDisplay.fill((0,0,0))
+
+    if avatX > 749:
+        avatX = -19
+    if avatX < -19:
+        avatX = 749
+
+    if avatY < -19:
+        avatY = 749
+    if avatY > 749:
+        avatY = -19
+
     pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
 
     print(avatUp)    
     if avatUp == True:
-        avatY = avatY - 1
+        avatY = avatY - speed
     elif avatDown == True:
-        avatY = avatY + 1
+        avatY = avatY + speed
     elif avatRight == True:
-        avatX = avatX + 1
+        avatX = avatX + speed
     elif avatLeft == True:
-        avatX = avatX - 1
+        avatX = avatX - speed
     
     pygame.draw.rect(gameDisplay, (255,255,255), (avatX, avatY, 20, 20))
     for event in pygame.event.get():

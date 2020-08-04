@@ -79,23 +79,29 @@ avatRightIn = False
 avatDownIn = False
 avatUpIn = False
 
-speed = 4
+speed = 10
+
+csize = 62
+
+bullets = []
+
 while end == False:
+    img = pygame.image.load('JackOffice.png')
+    gameDisplay.blit(img, (0,0))
     clock.tick(60)
-    gameDisplay.fill((0,0,0))
 
-    if avatX > 749:
-        avatX = -19
-    if avatX < -19:
-        avatX = 749
+    if avatX > 750 - csize:
+        avatX = 750 - csize
+    if avatX < 0:
+        avatX = 0
 
-    if avatY < -19:
-        avatY = 749
-    if avatY > 749:
-        avatY = -19
+    if avatY > 750 - csize:
+        avatY = 750 - csize
+    if avatY < 0:
+        avatY = 0
 
-    pygame.draw.rect(gameDisplay, (0,255,255), (avatX, avatY, 20, 20))
-    pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, 20, 20))
+    pygame.draw.rect(gameDisplay, (0,255,255), (avatX, avatY, csize, csize))
+    pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
 
     if avatUp == True:
         avatY = avatY - speed
@@ -105,7 +111,6 @@ while end == False:
         avatX = avatX + speed
     elif avatLeft == True:
         avatX = avatX - speed
-    
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -191,10 +196,7 @@ while end == False:
                     avatUp = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
-            if 250 < mx < 350:
-                if 250 < my < 350:
-                    end = True
-                    print(end)
+            
     pygame.display.update()
 
 #Game Over

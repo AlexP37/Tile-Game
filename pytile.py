@@ -3,6 +3,7 @@ import os
 import pygame
 import math
 import random
+from PIL import Image, ImageDraw
 pygame.init()
 pygame.font.init()
 display_width = 750
@@ -64,8 +65,8 @@ while cont == False:
 #Begins Game
 makeGame()
 end = False
-avatX = 10
-avatY = 10
+avatX = 25
+avatY = 313
 
 enemyX = 720
 enemyY = 720
@@ -79,38 +80,93 @@ avatRightIn = False
 avatDownIn = False
 avatUpIn = False
 
-speed = 10
+speed = 1
 
-csize = 62
+csizeX = 26
+csizeY = 30
 
 bullets = []
 
+# PILimg = Image.new('RGB', (750, 750), color = (0,0,0))
+
+# movabil = []
+
+# f = open("tiles/map1.txt")
+# for l in f:
+#     lin = l.split("|")
+#     movabil.append(lin[1])
+# f.close()
+
+# print(movabil)
+
+# def makeMap():
+#     global PILimg
+#     global MAPimg
+
+#     imgCount = -1
+
+#     for y in range(10):
+#         for x in range(10):
+#             imgCount = imgCount + 1
+#             imgNumber = movabil[imgCount]
+#             PILimg.paste(Image.open('tiles/' + imgNumber + '.png'), (75*x, 75*y))
+#     MAPimg = pygame.image.fromstring(PILimg.tobytes(), PILimg.size, PILimg.mode)
+
+# makeMap()
+
+movementCount = 0
+
+    
+shooting = False
+
 while end == False:
-    img = pygame.image.load('JackOffice.png')
+    # gameDisplay.blit(MAPimg, (0,0))
+
+    img = pygame.image.load('map1.png')
+
     gameDisplay.blit(img, (0,0))
+
     clock.tick(60)
+    
 
-    if avatX > 750 - csize:
-        avatX = 750 - csize
-    if avatX < 0:
-        avatX = 0
+    # s = pygame.Surface((csize, csize)) # Size of Shadow
+    # s.set_alpha(180) # Alpha of Shadow
+    # s.fill((0, 255, 255)) # Color of Shadow
+    # gameDisplay.blit(s, ((avatX - 2), (avatY - 2))) # Position of Shadow
+    # pygame.draw.rect(gameDisplay, (0, 255, 255), (avatX, avatY, csize, csize)) # Location, location, size, size
 
-    if avatY > 750 - csize:
-        avatY = 750 - csize
-    if avatY < 0:
-        avatY = 0
 
-    pygame.draw.rect(gameDisplay, (0,255,255), (avatX, avatY, csize, csize))
-    pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
+    # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
+
+    CHARACTERimg = pygame.image.load('arrowRunning.png')
+    if shooting == True:
+        CHARACTERimg = pygame.image.load('arrowShooting.png')
 
     if avatUp == True:
         avatY = avatY - speed
-    elif avatDown == True:
+    if avatDown == True:
         avatY = avatY + speed
-    elif avatRight == True:
+    if avatRight == True:
         avatX = avatX + speed
-    elif avatLeft == True:
+    if avatLeft == True:
         avatX = avatX - speed
+        if avatRight == False:
+            CHARACTERimg = pygame.image.load('arrowRunningL.png')
+        if shooting == True:
+            CHARACTERimg = pygame.image.load('arrowShootingL.png')
+
+    if avatX > 750 - csizeX:
+        avatX = 750 - csizeX
+    if avatX < 0:
+        avatX = 0
+
+    if avatY > 750 - csizeY:
+        avatY = 750 - csizeY
+    if avatY < 0:
+        avatY = 0
+
+    gameDisplay.blit(CHARACTERimg, (avatX, avatY))
+
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -124,78 +180,35 @@ while end == False:
                 pygame.quit()
                 pygame.font.quit()
                 quit()
-            if event.key == pygame.K_UP:
-                avatUpIn = True
-                avatDown = False
-                avatRight = False
-                avatLeft = False
+            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                speed = speed * 4
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
                 avatUp = True
-            if event.key == pygame.K_DOWN:
-                avatDownIn = True
-                avatUp = False
-                avatRight = False
-                avatLeft = False
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 avatDown = True
-            if event.key == pygame.K_RIGHT:
-                avatRightIn = True
-                avatDown = False
-                avatUp = False
-                avatLeft = False
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 avatRight = True
-            if event.key == pygame.K_LEFT:
-                avatLeftIn = True
-                avatDown = False
-                avatUp = False
-                avatRight = False
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 avatLeft = True
 
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                avatUpIn = False
+            if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                speed = speed / 4
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
                 avatUp = False
-                if avatLeftIn == True:
-                    avatLeft = True
-                if avatRightIn == True:
-                    avatRight = True
-                if avatDownIn == True:
-                    avatDown = True
-                if avatUpIn == True:
-                    avatUp = True
-            if event.key == pygame.K_DOWN:
-                avatDownIn = False
+            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                 avatDown = False
-                if avatLeftIn == True:
-                    avatLeft = True
-                if avatRightIn == True:
-                    avatRight = True
-                if avatDownIn == True:
-                    avatDown = True
-                if avatUpIn == True:
-                    avatUp = True
-            if event.key == pygame.K_RIGHT:
-                avatRightIn = False
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 avatRight = False
-                if avatLeftIn == True:
-                    avatLeft = True
-                if avatRightIn == True:
-                    avatRight = True
-                if avatDownIn == True:
-                    avatDown = True
-                if avatUpIn == True:
-                    avatUp = True
-            if event.key == pygame.K_LEFT:
-                avatLeftIn = False
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 avatLeft = False
-                if avatLeftIn == True:
-                    avatLeft = True
-                if avatRightIn == True:
-                    avatRight = True
-                if avatDownIn == True:
-                    avatDown = True
-                if avatUpIn == True:
-                    avatUp = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
+            shooting = True
+        if event.type == pygame.MOUSEBUTTONUP:
+            mx, my = pygame.mouse.get_pos()
+            shooting = False
+
             
     pygame.display.update()
 

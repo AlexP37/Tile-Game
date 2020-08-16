@@ -183,6 +183,14 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
+avatar = 'Deathstroke'
+projectilePic = 'arrowPic.png'
+runningR = 'arrowRunning.png'
+runningL = 'arrowRunningL.png'
+shootingR = 'arrowShooting.png'
+shootingL = 'arrowShootingL.png'
+
+startup = True
 
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
@@ -192,6 +200,28 @@ while end == False:
     gameDisplay.blit(img, (0,0))
 
     clock.tick(60)
+
+    if avatar == 'Green Arrow':
+        projectilePic = 'arrowPic.png'
+        runningR = 'arrowRunning.png'
+        runningL = 'arrowRunningL.png'
+        shootingR = 'arrowShooting.png'
+        shootingL = 'arrowShootingL.png'
+        csizeX = 26
+        csizeY = 30
+        asizeX = 20
+        asizeY = 5
+
+    if avatar == 'Deathstroke':
+        projectilePic = 'bulletPic.png'
+        runningR = 'deathstrokeRunning.png'
+        runningL = 'deathstrokeRunningL.png'
+        shootingR = 'deathstrokeShooting.png'
+        shootingL = 'deathstrokeShootingL.png'
+        csizeX = 26
+        csizeY = 30
+        asizeX = 5
+        asizeY = 3
     
 
     # s = pygame.Surface((csize, csize)) # Size of Shadow
@@ -241,20 +271,18 @@ while end == False:
             multipleArrows.remove(i)
             arrowColidedWithBuilding = False
         else:
-            arrowPic = pygame.image.load('arrowPic.png')
+            arrowPic = pygame.image.load(projectilePic)
             arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
             gameDisplay.blit(arrowPic, (i[0], i[1]))
 
 
-
-
     avatX_OG = avatX
     avatY_OG = avatY
 
-    CHARACTERimg = pygame.image.load('arrowRunning.png')
+    CHARACTERimg = pygame.image.load(runningR)
     if shooting == True:
-        CHARACTERimg = pygame.image.load('arrowShooting.png')
+        CHARACTERimg = pygame.image.load(shootingR)
 
     if avatUp == True:
         avatY = avatY - speed
@@ -269,9 +297,9 @@ while end == False:
         avatX = avatX - speed
         col()
         if avatRight == False:
-            CHARACTERimg = pygame.image.load('arrowRunningL.png')
+            CHARACTERimg = pygame.image.load(runningL)
         if shooting == True:
-            CHARACTERimg = pygame.image.load('arrowShootingL.png')
+            CHARACTERimg = pygame.image.load(shootingL)
 
     if avatX > 750 - csizeX:
         avatX = 750 - csizeX
@@ -329,13 +357,14 @@ while end == False:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
             shooting = True
-            arrow = True
-            arrowFire = True
         if event.type == pygame.MOUSEBUTTONUP:
             mx, my = pygame.mouse.get_pos()
-            shooting = False
-
-            
+            if startup == False:
+                shooting = False
+                arrow = True
+                arrowFire = True
+            startup = False
+    
     pygame.display.update()
 
 #Game Over

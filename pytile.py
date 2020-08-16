@@ -126,6 +126,9 @@ shooting = False
 
 rotateArrowDEG = 0
 
+singleArrow = []
+arrowsDictionary = {}
+
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
 

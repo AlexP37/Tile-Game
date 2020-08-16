@@ -116,8 +116,15 @@ bullets = []
 
 movementCount = 0
 
+arrowX = avatX
+arrowY = avatY
+
+arrow = False
+arrowFire = False
     
 shooting = False
+
+rotateArrowDEG = 0
 
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
@@ -135,8 +142,37 @@ while end == False:
     # gameDisplay.blit(s, ((avatX - 2), (avatY - 2))) # Position of Shadow
     # pygame.draw.rect(gameDisplay, (0, 255, 255), (avatX, avatY, csize, csize)) # Location, location, size, size
 
-
     # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
+    if arrowFire == False:
+        arrowX = avatX
+        arrowY = avatY
+
+    if arrow == True:
+        arrowDifL = avatX - mx
+        arrowDifH = avatY - my
+        rotateArrow = math.atan2(arrowDifL, arrowDifH)
+        rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
+        
+        print(rotateArrowDEG)
+        
+        arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
+        arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
+
+        avatShootX = avatX
+        avatShootY = avatY
+        arrow = False
+
+    if arrowFire == True:
+        arrowX = arrowX + (8.00 * (arrowCos))
+        arrowY = arrowY + (8.00 * (arrowSin))
+        if arrowY <= 0 or arrowY >= 750 or arrowX <= 0 or arrowX >= 750:
+            arrow = False
+            arrowFire = False
+
+        arrowPic = pygame.image.load('arrowPic.png')
+        arrowPic = pygame.transform.rotate(arrowPic, rotateArrowDEG)
+
+        gameDisplay.blit(arrowPic, (arrowX, arrowY))
 
     CHARACTERimg = pygame.image.load('arrowRunning.png')
     if shooting == True:
@@ -205,6 +241,8 @@ while end == False:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
             shooting = True
+            arrow = True
+            arrowFire = True
         if event.type == pygame.MOUSEBUTTONUP:
             mx, my = pygame.mouse.get_pos()
             shooting = False

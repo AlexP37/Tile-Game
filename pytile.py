@@ -127,7 +127,7 @@ shooting = False
 rotateArrowDEG = 0
 
 singleArrow = []
-arrowsDictionary = {}
+multipleArrows = []
 
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
@@ -164,6 +164,16 @@ while end == False:
         avatShootX = avatX
         avatShootY = avatY
         arrow = False
+
+        singleArrow.append(arrowX)
+        singleArrow.append(arrowY)
+        singleArrow.append(arrowCos)
+        singleArrow.append(arrowSin)
+        singleArrow.append(rotateArrowDEG)
+        multipleArrows.append(singleArrow)
+        singleArrow = []
+        print(multipleArrows)
+
 
     if arrowFire == True:
         arrowX = arrowX + (8.00 * (arrowCos))

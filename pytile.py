@@ -183,7 +183,7 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'Deathstroke'
+avatar = 'Green Arrow'
 projectilePic = 'arrowPic.png'
 runningR = 'arrowRunning.png'
 runningL = 'arrowRunningL.png'

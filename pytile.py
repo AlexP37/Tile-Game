@@ -83,6 +83,34 @@ def colArrow():
     arrowX_OG = i[0]
     arrowY_OG = i[1]
 
+def colArrowHit():
+    global singleArrow
+    global multipleArrows
+    global arrowX_OG
+    global arrowY_OG
+    global arrowColidedWithBuilding
+    global enemies
+
+    m = 0
+    X = i[0]
+    Y = i[1]
+    gotcha = False
+    for e in enemies:
+        if gotcha == False:
+            eX = e[0]
+            eY = e[1]
+            eL = e[3]
+            eH = e[4]
+            if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
+                multipleArrows.remove(i)
+                e[5] = e[5] - 1
+                gotcha = True
+        if e[5] <= 0:
+            enemies.remove(e)
+            
+    arrowX_OG = i[0]
+    arrowY_OG = i[1]
+
 #Opening Menu
 cont = False
 pygame.draw.rect(gameDisplay, (0,0,0), (250, 250, 100, 100))
@@ -192,6 +220,16 @@ shootingL = 'arrowShootingL.png'
 
 startup = True
 
+enemies = []
+enemySINGLE = []
+spawnEnemy = 200
+enemyX = 620
+enemyY = 320
+enemyImage = pygame.image.load('archerRunningL.png')
+enemyL = 26
+enemyH = 30
+enemyHealth = 100
+
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
 
@@ -200,6 +238,17 @@ while end == False:
     gameDisplay.blit(img, (0,0))
 
     clock.tick(60)
+
+    if avatar == 'The Flash':
+        projectilePic = 'arrowPic.png'
+        standingR = 'arrowRunning.png'
+        standingL = 'arrowRunningL.png'
+        shootingR = 'arrowShooting.png'
+        shootingL = 'arrowShootingL.png'
+        csizeX = 26
+        csizeY = 30
+        asizeX = 20
+        asizeY = 5
 
     if avatar == 'Green Arrow':
         projectilePic = 'arrowPic.png'
@@ -222,7 +271,19 @@ while end == False:
         csizeY = 30
         asizeX = 5
         asizeY = 3
+
+    if avatar == 'Black Lightning':
+        projectilePic = 'electricityPic.png'
+        standingR = 'blightningRunning.png'
+        standingL = 'blightningRunningL.png'
+        shootingR = 'blightningShooting.png'
+        shootingL = 'blightningShootingL.png'
+        csizeX = 26
+        csizeY = 30
+        asizeX = 10
+        asizeY = 6
     
+
 
     # s = pygame.Surface((csize, csize)) # Size of Shadow
     # s.set_alpha(180) # Alpha of Shadow
@@ -266,6 +327,7 @@ while end == False:
         i[1] = i[1] + (8.00 * (i[3]))
 
         colArrow()
+        colArrowHit()
 
         if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
             multipleArrows.remove(i)
@@ -312,6 +374,22 @@ while end == False:
         avatY = 0
        
     gameDisplay.blit(CHARACTERimg, (avatX, avatY))
+    
+    spawnEnemy = spawnEnemy + 1
+    if spawnEnemy >= 200:
+        enemySINGLE.append(enemyX)
+        enemySINGLE.append(enemyY)
+        enemySINGLE.append(enemyImage)
+        enemySINGLE.append(enemyL)
+        enemySINGLE.append(enemyH)
+        enemySINGLE.append(enemyHealth)
+        enemies.append(enemySINGLE)
+        enemySINGLE = []
+        spawnEnemy = 0
+
+    for i in enemies:
+        gameDisplay.blit(i[2], (i[0], i[1]))
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

@@ -185,8 +185,8 @@ arrowY_OG = arrowY
 
 avatar = 'Green Arrow'
 projectilePic = 'arrowPic.png'
-runningR = 'arrowRunning.png'
-runningL = 'arrowRunningL.png'
+standingR = 'arrowRunning.png'
+standingL = 'arrowRunningL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
 
@@ -203,8 +203,8 @@ while end == False:
 
     if avatar == 'Green Arrow':
         projectilePic = 'arrowPic.png'
-        runningR = 'arrowRunning.png'
-        runningL = 'arrowRunningL.png'
+        standingR = 'arrowRunning.png'
+        standingL = 'arrowRunningL.png'
         shootingR = 'arrowShooting.png'
         shootingL = 'arrowShootingL.png'
         csizeX = 26
@@ -214,8 +214,8 @@ while end == False:
 
     if avatar == 'Deathstroke':
         projectilePic = 'bulletPic.png'
-        runningR = 'deathstrokeRunning.png'
-        runningL = 'deathstrokeRunningL.png'
+        standingR = 'deathstrokeRunning.png'
+        standingL = 'deathstrokeRunningL.png'
         shootingR = 'deathstrokeShooting.png'
         shootingL = 'deathstrokeShootingL.png'
         csizeX = 26
@@ -280,7 +280,7 @@ while end == False:
     avatX_OG = avatX
     avatY_OG = avatY
 
-    CHARACTERimg = pygame.image.load(runningR)
+    CHARACTERimg = pygame.image.load(standingR)
     if shooting == True:
         CHARACTERimg = pygame.image.load(shootingR)
 
@@ -297,7 +297,7 @@ while end == False:
         avatX = avatX - speed
         col()
         if avatRight == False:
-            CHARACTERimg = pygame.image.load(runningL)
+            CHARACTERimg = pygame.image.load(standingL)
         if shooting == True:
             CHARACTERimg = pygame.image.load(shootingL)
 

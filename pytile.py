@@ -211,7 +211,7 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'Green Arrow'
+avatar = 'Deathstroke'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -256,6 +256,7 @@ while end == False:
         standingL = 'arrowRunningL.png'
         shootingR = 'arrowShooting.png'
         shootingL = 'arrowShootingL.png'
+        arrowSpeed = 8
         csizeX = 26
         csizeY = 30
         asizeX = 20
@@ -267,6 +268,7 @@ while end == False:
         standingL = 'deathstrokeRunningL.png'
         shootingR = 'deathstrokeShooting.png'
         shootingL = 'deathstrokeShootingL.png'
+        arrowSpeed = 15
         csizeX = 26
         csizeY = 30
         asizeX = 5
@@ -278,6 +280,7 @@ while end == False:
         standingL = 'blightningRunningL.png'
         shootingR = 'blightningShooting.png'
         shootingL = 'blightningShootingL.png'
+        arrowSpeed = 12
         csizeX = 26
         csizeY = 30
         asizeX = 10
@@ -323,8 +326,8 @@ while end == False:
         arrowX_OG = i[0]
         arrowY_OG = i[1]
 
-        i[0] = i[0] + (8.00 * (i[2]))
-        i[1] = i[1] + (8.00 * (i[3]))
+        i[0] = i[0] + (arrowSpeed * (i[2]))
+        i[1] = i[1] + (arrowSpeed * (i[3]))
 
         colArrow()
         colArrowHit()

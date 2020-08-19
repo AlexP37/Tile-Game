@@ -38,29 +38,56 @@ def makeGame():
     gameDisplay.fill((0,0,0))
     pygame.display.update()
 
-def col():
+def col(movement):
     global avatX
     global avatY
     global avatX_OG
     global avatY_OG
 
+    continueCheckingCollision = True
     m = 0
+    m2 = 0
     X = avatX
     Y = avatY
-    while m < 4:
-        m = m + 1
+    while m2 < 4:
+        while m < 4:
+            m = m + 1
 
-        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
-            avatX = avatX_OG
-            avatY = avatY_OG
-            m = 4
+            if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
+                for i in range((int(-speed) + 1), 0):
+                    if continueCheckingCollision == True:
+                        i = i * -1
+                        if movement == 'avatUp':
+                            Y = Y - i
+                        elif movement == 'avatDown':
+                            Y = Y + i
+                        elif movement == 'avatRight':
+                            X = X + i
+                        elif movement == 'avatLeft':
+                            X = X - i
+                        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
+                            continueCheckingCollision = True
+                        else:
+                            continueCheckingCollision = False
+                            Xc = X
+                            Yc = Y 
 
-        if m == 1:
-            X = avatX + csizeX
-        elif m == 2:
-            Y = avatY + csizeY
-        elif m == 3:
-            X = avatX
+                if continueCheckingCollision == True:
+                    avatX = avatX_OG
+                    avatY = avatY_OG
+                if continueCheckingCollision == False:
+                    avatX = Xc
+                    avatY = Yc
+                m = 4
+
+            if m == 1:
+                X = avatX + csizeX
+            elif m == 2:
+                Y = avatY + csizeY
+            elif m == 3:
+                X = avatX
+        m2 = m2 + 1
+        m = 0
             
     avatX_OG = avatX
     avatY_OG = avatY
@@ -211,10 +238,12 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'Deathstroke'
+avatar = 'The Flash'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
+movingR = 'flashMoving.png'
+movingL = 'flashMovingL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
 
@@ -228,7 +257,10 @@ enemyY = 320
 enemyImage = pygame.image.load('archerRunningL.png')
 enemyL = 26
 enemyH = 30
-enemyHealth = 100
+enemyHealth = 10
+arrowSpeed = 8
+punch = False
+facingLeft = False
 
 while end == False:
     # gameDisplay.blit(MAPimg, (0,0))
@@ -240,15 +272,18 @@ while end == False:
     clock.tick(60)
 
     if avatar == 'The Flash':
-        projectilePic = 'arrowPic.png'
-        standingR = 'arrowRunning.png'
-        standingL = 'arrowRunningL.png'
-        shootingR = 'arrowShooting.png'
-        shootingL = 'arrowShootingL.png'
+        projectilePic = ''
+        standingR = 'flashStanding.png'
+        standingL = 'flashStandingL.png'
+        shootingR = 'flashAttack.png'
+        shootingL = 'flashAttackL.png'
+        movingR = 'flashMoving.png'
+        movingL = 'flashMovingL.png'
         csizeX = 26
         csizeY = 30
         asizeX = 20
         asizeY = 5
+        arrowSpeed = 1
 
     if avatar == 'Green Arrow':
         projectilePic = 'arrowPic.png'
@@ -256,6 +291,8 @@ while end == False:
         standingL = 'arrowRunningL.png'
         shootingR = 'arrowShooting.png'
         shootingL = 'arrowShootingL.png'
+        movingR = ''
+        movingL = ''
         arrowSpeed = 8
         csizeX = 26
         csizeY = 30
@@ -268,6 +305,8 @@ while end == False:
         standingL = 'deathstrokeRunningL.png'
         shootingR = 'deathstrokeShooting.png'
         shootingL = 'deathstrokeShootingL.png'
+        movingR = ''
+        movingL = ''
         arrowSpeed = 15
         csizeX = 26
         csizeY = 30
@@ -280,6 +319,8 @@ while end == False:
         standingL = 'blightningRunningL.png'
         shootingR = 'blightningShooting.png'
         shootingL = 'blightningShootingL.png'
+        movingR = ''
+        movingL = ''
         arrowSpeed = 12
         csizeX = 26
         csizeY = 30
@@ -296,50 +337,51 @@ while end == False:
 
     # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
 
-    if arrow == True:
+    if projectilePic != '':
+        if arrow == True:
 
-        arrowX = avatX + (csizeX / 2)
-        arrowY = avatY + (csizeY / 2)
+            arrowX = avatX + (csizeX / 2)
+            arrowY = avatY + (csizeY / 2)
 
-        arrowDifL = arrowX - mx
-        arrowDifH = arrowY - my
-        rotateArrow = math.atan2(arrowDifL, arrowDifH)
-        rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
-        
-        print(rotateArrowDEG)
-        
-        arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
-        arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
+            arrowDifL = arrowX - mx
+            arrowDifH = arrowY - my
+            rotateArrow = math.atan2(arrowDifL, arrowDifH)
+            rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
+            
+            print(rotateArrowDEG)
+            
+            arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
+            arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
 
-        arrow = False
+            arrow = False
 
-        singleArrow.append(arrowX)
-        singleArrow.append(arrowY)
-        singleArrow.append(arrowCos)
-        singleArrow.append(arrowSin)
-        singleArrow.append(rotateArrowDEG)
-        multipleArrows.append(singleArrow)
-        singleArrow = []
-        print(multipleArrows)
+            singleArrow.append(arrowX)
+            singleArrow.append(arrowY)
+            singleArrow.append(arrowCos)
+            singleArrow.append(arrowSin)
+            singleArrow.append(rotateArrowDEG)
+            multipleArrows.append(singleArrow)
+            singleArrow = []
+            print(multipleArrows)
 
-    for i in multipleArrows:
-        arrowX_OG = i[0]
-        arrowY_OG = i[1]
+        for i in multipleArrows:
+            arrowX_OG = i[0]
+            arrowY_OG = i[1]
 
-        i[0] = i[0] + (arrowSpeed * (i[2]))
-        i[1] = i[1] + (arrowSpeed * (i[3]))
+            i[0] = i[0] + (arrowSpeed * (i[2]))
+            i[1] = i[1] + (arrowSpeed * (i[3]))
 
-        colArrow()
-        colArrowHit()
+            colArrow()
+            colArrowHit()
 
-        if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
-            multipleArrows.remove(i)
-            arrowColidedWithBuilding = False
-        else:
-            arrowPic = pygame.image.load(projectilePic)
-            arrowPic = pygame.transform.rotate(arrowPic, i[4])
+            if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
+                multipleArrows.remove(i)
+                arrowColidedWithBuilding = False
+            else:
+                arrowPic = pygame.image.load(projectilePic)
+                arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
-            gameDisplay.blit(arrowPic, (i[0], i[1]))
+                gameDisplay.blit(arrowPic, (i[0], i[1]))
 
 
     avatX_OG = avatX
@@ -351,20 +393,34 @@ while end == False:
 
     if avatUp == True:
         avatY = avatY - speed
-        col()
+        col('avatUp')
     if avatDown == True:
         avatY = avatY + speed
-        col()
+        col('avatDown')
     if avatRight == True:
         avatX = avatX + speed
-        col()
+        col('avatRight')
+        facingLeft = False
     if avatLeft == True:
         avatX = avatX - speed
-        col()
+        col('avatLeft')
+        facingLeft = True
         if avatRight == False:
             CHARACTERimg = pygame.image.load(standingL)
         if shooting == True:
             CHARACTERimg = pygame.image.load(shootingL)
+
+    if facingLeft == True:
+        if shooting == True:
+            CHARACTERimg = pygame.image.load(shootingL)
+        else:
+            CHARACTERimg = pygame.image.load(standingL)
+
+    if (avatUp == True or avatLeft == True or avatRight == True or avatDown == True) and (speeded == True):
+        if movingR != '':
+            CHARACTERimg = pygame.image.load(movingR)
+            if avatRight == False and avatLeft == True:
+                CHARACTERimg = pygame.image.load(movingL)
 
     if avatX > 750 - csizeX:
         avatX = 750 - csizeX
@@ -390,9 +446,30 @@ while end == False:
         enemySINGLE = []
         spawnEnemy = 0
 
+    punchY = 31
+    punchX = 27
+    punchXb = -2
+
     for i in enemies:
         gameDisplay.blit(i[2], (i[0], i[1]))
-
+        if speeded == True:
+            if doubleSpeeded == True:
+                punchX = 40
+                punchXb = -5
+            else:
+                punchX = 33
+                punchXb = -10
+        if punch == True:
+            if -punchY < (i[1] - avatY) < punchY:
+                if facingLeft == False:
+                    if punchXb < (i[0] - avatX) < punchX:
+                        i[5] = i[5] - 8
+                if facingLeft == True:
+                    if -punchXb > (i[0] - avatX) > -punchX:
+                        i[5] = i[5] - 8
+            punch = False
+            if i[5] <= 0:
+                enemies.remove(i)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -411,6 +488,8 @@ while end == False:
                     speed = speed * 4
                 else:
                     doubleSpeeded = True
+                    if movingR != '':
+                        speed = speed * 4
                 speeded = True
             if event.key == pygame.K_UP or event.key == pygame.K_w:
                 avatUp = True
@@ -426,7 +505,10 @@ while end == False:
                 if (speeded == True) and (doubleSpeeded == False):
                     speed = speed / 4
                     speeded = False
-                doubleSpeeded = False
+                if doubleSpeeded == True:
+                    doubleSpeeded = False
+                    if movingR != '':
+                        speed = speed / 4
             if event.key == pygame.K_UP or event.key == pygame.K_w:
                 avatUp = False
             if event.key == pygame.K_DOWN or event.key == pygame.K_s:
@@ -444,6 +526,7 @@ while end == False:
                 shooting = False
                 arrow = True
                 arrowFire = True
+                punch = True
             startup = False
     
     pygame.display.update()

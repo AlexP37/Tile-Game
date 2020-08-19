@@ -38,56 +38,29 @@ def makeGame():
     gameDisplay.fill((0,0,0))
     pygame.display.update()
 
-def col(movement):
+def col():
     global avatX
     global avatY
     global avatX_OG
     global avatY_OG
 
-    continueCheckingCollision = True
     m = 0
-    m2 = 0
     X = avatX
     Y = avatY
-    while m2 < 4:
-        while m < 4:
-            m = m + 1
+    while m < 4:
+        m = m + 1
 
-            if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
-                for i in range((int(-speed) + 1), 0):
-                    if continueCheckingCollision == True:
-                        i = i * -1
-                        if movement == 'avatUp':
-                            Y = Y - i
-                        elif movement == 'avatDown':
-                            Y = Y + i
-                        elif movement == 'avatRight':
-                            X = X + i
-                        elif movement == 'avatLeft':
-                            X = X - i
-                        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
-                            continueCheckingCollision = True
-                        else:
-                            continueCheckingCollision = False
-                            Xc = X
-                            Yc = Y 
+        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
+            avatX = avatX_OG
+            avatY = avatY_OG
+            m = 4
 
-                if continueCheckingCollision == True:
-                    avatX = avatX_OG
-                    avatY = avatY_OG
-                if continueCheckingCollision == False:
-                    avatX = Xc
-                    avatY = Yc
-                m = 4
-
-            if m == 1:
-                X = avatX + csizeX
-            elif m == 2:
-                Y = avatY + csizeY
-            elif m == 3:
-                X = avatX
-        m2 = m2 + 1
-        m = 0
+        if m == 1:
+            X = avatX + csizeX
+        elif m == 2:
+            Y = avatY + csizeY
+        elif m == 3:
+            X = avatX
             
     avatX_OG = avatX
     avatY_OG = avatY
@@ -393,17 +366,17 @@ while end == False:
 
     if avatUp == True:
         avatY = avatY - speed
-        col('avatUp')
+        col()
     if avatDown == True:
         avatY = avatY + speed
-        col('avatDown')
+        col()
     if avatRight == True:
         avatX = avatX + speed
-        col('avatRight')
+        col()
         facingLeft = False
     if avatLeft == True:
         avatX = avatX - speed
-        col('avatLeft')
+        col()
         facingLeft = True
         if avatRight == False:
             CHARACTERimg = pygame.image.load(standingL)

@@ -254,9 +254,9 @@ while end == False:
         movingL = 'flashMovingL.png'
         csizeX = 26
         csizeY = 30
-        asizeX = 20
-        asizeY = 5
-        arrowSpeed = 1
+        asizeX = 0
+        asizeY = 0
+        arrowSpeed = 0
 
     if avatar == 'Green Arrow':
         projectilePic = 'arrowPic.png'

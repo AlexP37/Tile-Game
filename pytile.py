@@ -238,21 +238,38 @@ pause = False
 pause2 = False
 
 while end == False:
+
+    if pause == True:
+        s = pygame.Surface((750, 750)) # Size of Shadow
+        s.set_alpha(160) # Alpha of Shadow
+        s.fill((0, 0, 0)) # Color of Shadow
+        gameDisplay.blit(s, (0, 0)) # Position of Shadow
+        imgP = pygame.image.load('pauseMenu.png')
+        gameDisplay.blit(imgP, (0,0))
+
     while pause == True:
-        img = pygame.image.load('pauseMenu.png')
-        gameDisplay.blit(img, (0,0))
-
         clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    end = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+            if event.type == pygame.MOUSEBUTTONUP:
+                mx, my = pygame.mouse.get_pos()
+                if (20 < mx < 727) and (605 < my < 727) and (pause2 == True):
+                    pause = False
+                    pause2 = False
+                else:
+                    pause2 = True
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            pause2 = True
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mx, my = pygame.mouse.get_pos()
-            if 696 < mx < 736 and 14 < my < 54 and pause2 == True:
-                pause = False
-                pause2 = False
-
+        pygame.display.update()
     # gameDisplay.blit(MAPimg, (0,0))
 
     img = pygame.image.load('map1.png')

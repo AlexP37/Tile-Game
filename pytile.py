@@ -103,7 +103,7 @@ def colArrowHit():
             eH = e[4]
             if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
                 multipleArrows.remove(i)
-                e[5] = e[5] - 1
+                e[5] = e[5] - projectilePower
                 gotcha = True
         if e[5] <= 0:
             enemies.remove(e)
@@ -219,6 +219,7 @@ movingR = 'flashMoving.png'
 movingL = 'flashMovingL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
+projectilePower = 1
 
 startup = True
 
@@ -275,9 +276,6 @@ while end == False:
     img = pygame.image.load('map1.png')
     gameDisplay.blit(img, (0,0))
 
-    img = pygame.image.load('pause.png')
-    gameDisplay.blit(img, (696,14))
-
     clock.tick(60)
 
     if avatar == 'The Flash':
@@ -307,6 +305,7 @@ while end == False:
         csizeY = 30
         asizeX = 20
         asizeY = 5
+        projectilePower = 3
 
     if avatar == 'Deathstroke':
         projectilePic = 'bulletPic.png'
@@ -321,6 +320,7 @@ while end == False:
         csizeY = 30
         asizeX = 5
         asizeY = 3
+        projectilePower = 4
 
     if avatar == 'Black Lightning':
         projectilePic = 'electricityPic.png'
@@ -335,6 +335,7 @@ while end == False:
         csizeY = 30
         asizeX = 10
         asizeY = 6
+        projectilePower = 3
     
 
 
@@ -472,10 +473,10 @@ while end == False:
             if -punchY < (i[1] - avatY) < punchY:
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
-                        i[5] = i[5] - 8
+                        i[5] = i[5] - 6
                 if facingLeft == True:
                     if -punchXb > (i[0] - avatX) > -punchX:
-                        i[5] = i[5] - 8
+                        i[5] = i[5] - 6
             punch = False
             if i[5] <= 0:
                 enemies.remove(i)
@@ -541,6 +542,10 @@ while end == False:
                     arrowFire = True
                     punch = True
                 startup = False
+    
+    if pause == False:
+        img = pygame.image.load('pause.png')
+        gameDisplay.blit(img, (696,14))
     
     pygame.display.update()
 

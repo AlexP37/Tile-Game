@@ -211,7 +211,7 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'The Flash'
+avatar = 'Black Lightning'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -234,13 +234,32 @@ enemyHealth = 10
 arrowSpeed = 8
 punch = False
 facingLeft = False
+pause = False
+pause2 = False
 
 while end == False:
+    while pause == True:
+        img = pygame.image.load('pauseMenu.png')
+        gameDisplay.blit(img, (0,0))
+
+        clock.tick(60)
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            pause2 = True
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = pygame.mouse.get_pos()
+            if 696 < mx < 736 and 14 < my < 54 and pause2 == True:
+                pause = False
+                pause2 = False
+
     # gameDisplay.blit(MAPimg, (0,0))
 
     img = pygame.image.load('map1.png')
-
     gameDisplay.blit(img, (0,0))
+
+    img = pygame.image.load('pause.png')
+    gameDisplay.blit(img, (696,14))
 
     clock.tick(60)
 
@@ -492,15 +511,19 @@ while end == False:
                 avatLeft = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
-            shooting = True
+            if 696 < mx < 736 and 14 < my < 54:
+                pause = True
+            else:
+                shooting = True
         if event.type == pygame.MOUSEBUTTONUP:
-            mx, my = pygame.mouse.get_pos()
-            if startup == False:
-                shooting = False
-                arrow = True
-                arrowFire = True
-                punch = True
-            startup = False
+            if pause == False:
+                mx, my = pygame.mouse.get_pos()
+                if startup == False:
+                    shooting = False
+                    arrow = True
+                    arrowFire = True
+                    punch = True
+                startup = False
     
     pygame.display.update()
 

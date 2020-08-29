@@ -211,7 +211,12 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'Black Lightning'
+enemyArrow = False
+eRotateArrowDEG = 0
+eSingleArrow = []
+eMultipleArrows = []
+
+avatar = 'The Flash'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -237,9 +242,9 @@ punch = False
 facingLeft = False
 pause = False
 pause2 = False
+eArrowTicker = 0
 
 while end == False:
-
     if pause == True:
         s = pygame.Surface((750, 750)) # Size of Shadow
         s.set_alpha(160) # Alpha of Shadow
@@ -277,6 +282,8 @@ while end == False:
     gameDisplay.blit(img, (0,0))
 
     clock.tick(60)
+
+    eProjectilePic = 'arrowPic2.png'
 
     if avatar == 'The Flash':
         projectilePic = ''
@@ -392,6 +399,59 @@ while end == False:
                 arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
                 gameDisplay.blit(arrowPic, (i[0], i[1]))
+
+    eArrowTicker = eArrowTicker + 1
+    eArrow = True
+    eArrowSpeed = 8
+
+    if eArrowTicker > 20:
+        eArrowTicker = 0
+    
+        for e in enemies:
+            if eArrow == True:
+
+                eArrowX = e[0] + (asizeX / 2)
+                eArrowY = e[1] + (asizeY / 2)
+
+                eArrowDifL = eArrowX - avatX
+                eArrowDifH = eArrowY - avatY
+                eRotateArrow = math.atan2(eArrowDifL, eArrowDifH)
+                eRotateArrowDEG = 90+(eRotateArrow * (180/math.pi))
+                
+                print(eRotateArrowDEG)
+                
+                eArrowSin = -1 * math.sin(eRotateArrowDEG / (180/math.pi))
+                eArrowCos = math.cos(eRotateArrowDEG / (180/math.pi))
+
+                eArrow = False
+
+                eSingleArrow.append(eArrowX)
+                eSingleArrow.append(eArrowY)
+                eSingleArrow.append(eArrowCos)
+                eSingleArrow.append(eArrowSin)
+                eSingleArrow.append(eRotateArrowDEG)
+                eMultipleArrows.append(eSingleArrow)
+                eSingleArrow = []
+                print(eMultipleArrows)
+
+    for i in eMultipleArrows:
+        eArrowX_OG = i[0]
+        eArrowY_OG = i[1]
+
+        i[0] = i[0] + (eArrowSpeed * (i[2]))
+        i[1] = i[1] + (eArrowSpeed * (i[3]))
+
+        colArrow()
+        # colArrowHit()
+
+        if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
+            eMultipleArrows.remove(i)
+            arrowColidedWithBuilding = False
+        else:
+            arrowPic = pygame.image.load(eProjectilePic)
+            arrowPic = pygame.transform.rotate(arrowPic, i[4])
+
+            gameDisplay.blit(arrowPic, (i[0], i[1]))
 
 
     avatX_OG = avatX

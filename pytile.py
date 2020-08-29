@@ -111,6 +111,25 @@ def colArrowHit():
     arrowX_OG = i[0]
     arrowY_OG = i[1]
 
+def eColArrowHit():
+    global eMultipleArrows
+    global enemies
+    global playerHealth
+
+    m = 0
+    X = i[0]
+    Y = i[1]
+    eX = avatX
+    eY = avatY
+    eL = csizeX
+    eH = csizeY
+    if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
+        eMultipleArrows.remove(i)
+        playerHealth = e[5] - playerHealth
+        
+    if playerHealth <= 0:
+        death = True
+
 #Opening Menu
 cont = False
 pygame.draw.rect(gameDisplay, (0,0,0), (250, 250, 100, 100))
@@ -157,6 +176,8 @@ speed = 1
 
 csizeX = 26
 csizeY = 30
+
+playerHealth = 10
 
 asizeX = 20
 asizeY = 5
@@ -216,7 +237,15 @@ eRotateArrowDEG = 0
 eSingleArrow = []
 eMultipleArrows = []
 
+<<<<<<< Updated upstream
 avatar = 'The Flash'
+=======
+<<<<<<< HEAD
+avatar = 'Green Arrow'
+=======
+avatar = 'The Flash'
+>>>>>>> EnemyShooting
+>>>>>>> Stashed changes
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -413,8 +442,18 @@ while end == False:
                 eArrowX = e[0] + (asizeX / 2)
                 eArrowY = e[1] + (asizeY / 2)
 
+<<<<<<< Updated upstream
                 eArrowDifL = eArrowX - avatX
                 eArrowDifH = eArrowY - avatY
+=======
+<<<<<<< HEAD
+                eArrowDifL = eArrowX - avatX - (csizeX/2)
+                eArrowDifH = eArrowY - avatY - (csizeY/2)
+=======
+                eArrowDifL = eArrowX - avatX
+                eArrowDifH = eArrowY - avatY
+>>>>>>> EnemyShooting
+>>>>>>> Stashed changes
                 eRotateArrow = math.atan2(eArrowDifL, eArrowDifH)
                 eRotateArrowDEG = 90+(eRotateArrow * (180/math.pi))
                 
@@ -442,7 +481,15 @@ while end == False:
         i[1] = i[1] + (eArrowSpeed * (i[3]))
 
         colArrow()
+<<<<<<< Updated upstream
         # colArrowHit()
+=======
+<<<<<<< HEAD
+        eColArrowHit()
+=======
+        # colArrowHit()
+>>>>>>> EnemyShooting
+>>>>>>> Stashed changes
 
         if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
             eMultipleArrows.remove(i)

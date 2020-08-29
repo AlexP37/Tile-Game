@@ -103,13 +103,34 @@ def colArrowHit():
             eH = e[4]
             if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
                 multipleArrows.remove(i)
-                e[5] = e[5] - 1
+                e[5] = e[5] - projectilePower
                 gotcha = True
         if e[5] <= 0:
             enemies.remove(e)
             
     arrowX_OG = i[0]
     arrowY_OG = i[1]
+
+def eColArrowHit():
+    global eMultipleArrows
+    global enemies
+    global playerHealth
+
+    m = 0
+    X = i[0]
+    Y = i[1]
+
+    eX = avatX
+    eY = avatY
+    eL = csizeX
+    eH = csizeY
+
+    if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
+        eMultipleArrows.remove(i)
+        playerHealth = e[5] - playerHealth
+
+    if playerHealth <= 0:
+        death = True
 
 #Opening Menu
 cont = False
@@ -157,6 +178,8 @@ speed = 1
 
 csizeX = 26
 csizeY = 30
+
+playerHealth = 10
 
 asizeX = 20
 asizeY = 5
@@ -211,7 +234,12 @@ avatY_OG = avatY
 arrowX_OG = arrowX
 arrowY_OG = arrowY
 
-avatar = 'Black Lightning'
+enemyArrow = False
+eRotateArrowDEG = 0
+eSingleArrow = []
+eMultipleArrows = []
+
+avatar = 'Green Arrow'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -219,6 +247,7 @@ movingR = 'flashMoving.png'
 movingL = 'flashMovingL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
+projectilePower = 1
 
 startup = True
 
@@ -236,9 +265,9 @@ punch = False
 facingLeft = False
 pause = False
 pause2 = False
+eArrowTicker = 0
 
 while end == False:
-
     if pause == True:
         s = pygame.Surface((750, 750)) # Size of Shadow
         s.set_alpha(160) # Alpha of Shadow
@@ -275,10 +304,9 @@ while end == False:
     img = pygame.image.load('map1.png')
     gameDisplay.blit(img, (0,0))
 
-    img = pygame.image.load('pause.png')
-    gameDisplay.blit(img, (696,14))
-
     clock.tick(60)
+
+    eProjectilePic = 'arrowPic2.png'
 
     if avatar == 'The Flash':
         projectilePic = ''
@@ -307,6 +335,7 @@ while end == False:
         csizeY = 30
         asizeX = 20
         asizeY = 5
+        projectilePower = 3
 
     if avatar == 'Deathstroke':
         projectilePic = 'bulletPic.png'
@@ -321,6 +350,7 @@ while end == False:
         csizeY = 30
         asizeX = 5
         asizeY = 3
+        projectilePower = 4
 
     if avatar == 'Black Lightning':
         projectilePic = 'electricityPic.png'
@@ -335,6 +365,7 @@ while end == False:
         csizeY = 30
         asizeX = 10
         asizeY = 6
+        projectilePower = 3
     
 
 
@@ -391,6 +422,58 @@ while end == False:
                 arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
                 gameDisplay.blit(arrowPic, (i[0], i[1]))
+
+    eArrowTicker = eArrowTicker + 1
+    eArrow = True
+    eArrowSpeed = 8
+
+    if eArrowTicker > 20:
+        eArrowTicker = 0
+    
+        for e in enemies:
+            if eArrow == True:
+
+                eArrowX = e[0] + (asizeX / 2)
+                eArrowY = e[1] + (asizeY / 2)
+                eArrowDifL = eArrowX - avatX - (csizeX/2)
+                eArrowDifH = eArrowY - avatY - (csizeY/2)
+                eRotateArrow = math.atan2(eArrowDifL, eArrowDifH)
+                eRotateArrowDEG = 90+(eRotateArrow * (180/math.pi))
+                
+                print(eRotateArrowDEG)
+                
+                eArrowSin = -1 * math.sin(eRotateArrowDEG / (180/math.pi))
+                eArrowCos = math.cos(eRotateArrowDEG / (180/math.pi))
+
+                eArrow = False
+
+                eSingleArrow.append(eArrowX)
+                eSingleArrow.append(eArrowY)
+                eSingleArrow.append(eArrowCos)
+                eSingleArrow.append(eArrowSin)
+                eSingleArrow.append(eRotateArrowDEG)
+                eMultipleArrows.append(eSingleArrow)
+                eSingleArrow = []
+                print(eMultipleArrows)
+
+    for i in eMultipleArrows:
+        eArrowX_OG = i[0]
+        eArrowY_OG = i[1]
+
+        i[0] = i[0] + (eArrowSpeed * (i[2]))
+        i[1] = i[1] + (eArrowSpeed * (i[3]))
+
+        colArrow()
+        eColArrowHit()
+
+        if i[1] <= 0 or i[1] >= 750 or i[0] <= 0 or i[0] >= 750 or arrowColidedWithBuilding == True:
+            eMultipleArrows.remove(i)
+            arrowColidedWithBuilding = False
+        else:
+            arrowPic = pygame.image.load(eProjectilePic)
+            arrowPic = pygame.transform.rotate(arrowPic, i[4])
+
+            gameDisplay.blit(arrowPic, (i[0], i[1]))
 
 
     avatX_OG = avatX
@@ -472,10 +555,10 @@ while end == False:
             if -punchY < (i[1] - avatY) < punchY:
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
-                        i[5] = i[5] - 8
+                        i[5] = i[5] - 6
                 if facingLeft == True:
                     if -punchXb > (i[0] - avatX) > -punchX:
-                        i[5] = i[5] - 8
+                        i[5] = i[5] - 6
             punch = False
             if i[5] <= 0:
                 enemies.remove(i)
@@ -541,6 +624,10 @@ while end == False:
                     arrowFire = True
                     punch = True
                 startup = False
+    
+    if pause == False:
+        img = pygame.image.load('pause.png')
+        gameDisplay.blit(img, (696,14))
     
     pygame.display.update()
 

@@ -127,7 +127,8 @@ def eColArrowHit():
     
     if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
         eMultipleArrows.remove(i)
-        playerHealth = e[5] - playerHealth
+        playerHealth = playerHealth - 4
+        print("PLY HEALTH::::::::::: " + str(playerHealth))
     
     if playerHealth <= 0:
         death = True
@@ -179,7 +180,7 @@ speed = 1
 csizeX = 26
 csizeY = 30
 
-playerHealth = 10
+playerHealth = 35
 
 asizeX = 20
 asizeY = 5
@@ -525,6 +526,11 @@ while end == False:
         avatY = 0
        
     gameDisplay.blit(CHARACTERimg, (avatX, avatY))
+
+    pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 4 * (playerHealth), 32))
+
+    HealthBarImg = pygame.image.load('pfhb.png')
+    gameDisplay.blit(HealthBarImg, (4, 4))
     
     spawnEnemy = spawnEnemy + 1
     if spawnEnemy >= 200:

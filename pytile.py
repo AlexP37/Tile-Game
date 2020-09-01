@@ -50,7 +50,7 @@ def col():
     while m < 4:
         m = m + 1
 
-        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
+        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
             avatX = avatX_OG
             avatY = avatY_OG
             m = 4
@@ -268,6 +268,10 @@ pause = False
 pause2 = False
 eArrowTicker = 0
 
+shooterTimer = 0
+
+theMouseButtonIsDown = False
+
 while end == False:
     if pause == True:
         s = pygame.Surface((750, 750)) # Size of Shadow
@@ -379,31 +383,37 @@ while end == False:
     # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
 
     if projectilePic != '':
+
+        print(str(shooterTimer) + "THIS IS THE SHOOTER TIMER")
+
         if arrow == True:
-
-            arrowX = avatX + (csizeX / 2)
-            arrowY = avatY + (csizeY / 2)
-
-            arrowDifL = arrowX - mx
-            arrowDifH = arrowY - my
-            rotateArrow = math.atan2(arrowDifL, arrowDifH)
-            rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
-            
-            print(rotateArrowDEG)
-            
-            arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
-            arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
-
             arrow = False
 
-            singleArrow.append(arrowX)
-            singleArrow.append(arrowY)
-            singleArrow.append(arrowCos)
-            singleArrow.append(arrowSin)
-            singleArrow.append(rotateArrowDEG)
-            multipleArrows.append(singleArrow)
-            singleArrow = []
-            print(multipleArrows)
+            if shooterTimer > 2:
+
+                arrowX = avatX + (csizeX / 2)
+                arrowY = avatY + (csizeY / 2)
+
+                arrowDifL = arrowX - mx
+                arrowDifH = arrowY - my
+                rotateArrow = math.atan2(arrowDifL, arrowDifH)
+                rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
+                
+                # print(rotateArrowDEG)
+                
+                arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
+                arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
+
+                singleArrow.append(arrowX)
+                singleArrow.append(arrowY)
+                singleArrow.append(arrowCos)
+                singleArrow.append(arrowSin)
+                singleArrow.append(rotateArrowDEG)
+                multipleArrows.append(singleArrow)
+                singleArrow = []
+                # print(multipleArrows)
+            
+            shooterTimer = 0
 
         for i in multipleArrows:
             arrowX_OG = i[0]
@@ -441,7 +451,7 @@ while end == False:
                 eRotateArrow = math.atan2(eArrowDifL, eArrowDifH)
                 eRotateArrowDEG = 90+(eRotateArrow * (180/math.pi))
                 
-                print(eRotateArrowDEG)
+                # print(eRotateArrowDEG)
                 
                 eArrowSin = -1 * math.sin(eRotateArrowDEG / (180/math.pi))
                 eArrowCos = math.cos(eRotateArrowDEG / (180/math.pi))
@@ -455,7 +465,7 @@ while end == False:
                 eSingleArrow.append(eRotateArrowDEG)
                 eMultipleArrows.append(eSingleArrow)
                 eSingleArrow = []
-                print(eMultipleArrows)
+                # print(eMultipleArrows)
 
     for i in eMultipleArrows:
         eArrowX_OG = i[0]
@@ -529,7 +539,7 @@ while end == False:
 
     pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 4 * (playerHealth), 32))
 
-    HealthBarImg = pygame.image.load('pfhb.png')
+    HealthBarImg = pygame.image.load('HB.png')
     gameDisplay.blit(HealthBarImg, (4, 4))
     
     spawnEnemy = spawnEnemy + 1
@@ -550,6 +560,11 @@ while end == False:
 
     for i in enemies:
         gameDisplay.blit(i[2], (i[0], i[1]))
+
+        pygame.draw.rect(gameDisplay, (230,0,0), (i[0] + 1, i[1] - 10, 2.4 * (i[5]), 8))
+
+        HealthBarImg = pygame.image.load('eHealthBar.png')
+        gameDisplay.blit(HealthBarImg, (i[0], i[1] - 12))
         if speeded == True:
             if doubleSpeeded == True:
                 punchX = 40
@@ -621,8 +636,10 @@ while end == False:
                 pause = True
             else:
                 shooting = True
+                theMouseButtonIsDown = True
         if event.type == pygame.MOUSEBUTTONUP:
             if pause == False:
+                theMouseButtonIsDown = False
                 mx, my = pygame.mouse.get_pos()
                 if startup == False:
                     shooting = False
@@ -631,6 +648,9 @@ while end == False:
                     punch = True
                 startup = False
     
+    if theMouseButtonIsDown == True:
+        shooterTimer = shooterTimer + 1
+
     if pause == False:
         img = pygame.image.load('pause.png')
         gameDisplay.blit(img, (696,14))

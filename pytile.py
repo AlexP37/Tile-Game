@@ -3,7 +3,9 @@ import os
 import pygame
 import math
 import random
-from PIL import Image, ImageDraw
+
+os.system("clear")
+
 pygame.init()
 pygame.font.init()
 display_width = 750
@@ -181,36 +183,10 @@ csizeX = 26
 csizeY = 30
 
 playerHealth = 35
+playerHealthMax = 35
 
 asizeX = 20
 asizeY = 5
-
-# PILimg = Image.new('RGB', (750, 750), color = (0,0,0))
-
-# movabil = []
-
-# f = open("tiles/map1.txt")
-# for l in f:
-#     lin = l.split("|")
-#     movabil.append(lin[1])
-# f.close()
-
-# print(movabil)
-
-# def makeMap():
-#     global PILimg
-#     global MAPimg
-
-#     imgCount = -1
-
-#     for y in range(10):
-#         for x in range(10):
-#             imgCount = imgCount + 1
-#             imgNumber = movabil[imgCount]
-#             PILimg.paste(Image.open('tiles/' + imgNumber + '.png'), (75*x, 75*y))
-#     MAPimg = pygame.image.fromstring(PILimg.tobytes(), PILimg.size, PILimg.mode)
-
-# makeMap()
 
 movementCount = 0
 
@@ -269,8 +245,20 @@ pause2 = False
 eArrowTicker = 0
 
 shooterTimer = 0
+bulletsLeft = 10
+reloadGun = 0
 
 theMouseButtonIsDown = False
+
+charSelector = False
+
+hitbox = False
+
+healthPackCount = 0
+
+healthPacks = []
+
+healthPackRespawnTicker = 20
 
 while end == False:
     if pause == True:
@@ -321,6 +309,10 @@ while end == False:
         shootingL = 'flashAttackL.png'
         movingR = 'flashMoving.png'
         movingL = 'flashMovingL.png'
+        projectileIconIMG = ''
+        projectileIconIMG2 = ''
+        projectileIconIMG3 = ''
+        projectileIconIMG4 = ''
         csizeX = 26
         csizeY = 30
         asizeX = 0
@@ -333,6 +325,10 @@ while end == False:
         standingL = 'arrowRunningL.png'
         shootingR = 'arrowShooting.png'
         shootingL = 'arrowShootingL.png'
+        projectileIconIMG = 'bow.png'
+        projectileIconIMG2 = 'bowAndArrow1.png'
+        projectileIconIMG3 = 'bowAndArrow2.png'
+        projectileIconIMG4 = 'bowAndArrow3.png'
         movingR = ''
         movingL = ''
         arrowSpeed = 8
@@ -340,7 +336,7 @@ while end == False:
         csizeY = 30
         asizeX = 20
         asizeY = 5
-        projectilePower = 3
+        projectilePower = 4
 
     if avatar == 'Deathstroke':
         projectilePic = 'bulletPic.png'
@@ -348,14 +344,18 @@ while end == False:
         standingL = 'deathstrokeRunningL.png'
         shootingR = 'deathstrokeShooting.png'
         shootingL = 'deathstrokeShootingL.png'
+        projectileIconIMG = 'gun' + str(bulletsLeft) + '.png'
+        projectileIconIMG2 = ''
+        projectileIconIMG3 = ''
+        projectileIconIMG4 = ''
         movingR = ''
         movingL = ''
-        arrowSpeed = 15
+        arrowSpeed = 10
         csizeX = 26
         csizeY = 30
         asizeX = 5
         asizeY = 3
-        projectilePower = 4
+        projectilePower = 2
 
     if avatar == 'Black Lightning':
         projectilePic = 'electricityPic.png'
@@ -363,15 +363,18 @@ while end == False:
         standingL = 'blightningRunningL.png'
         shootingR = 'blightningShooting.png'
         shootingL = 'blightningShootingL.png'
+        projectileIconIMG = 'electricityBall.png'
+        projectileIconIMG2 = 'electricityCharging1.png'
+        projectileIconIMG3 = 'electricityCharging2.png'
+        projectileIconIMG4 = 'electricityCharging3.png'
         movingR = ''
         movingL = ''
-        arrowSpeed = 12
+        arrowSpeed = 15
         csizeX = 26
         csizeY = 30
         asizeX = 10
         asizeY = 6
         projectilePower = 3
-    
 
 
     # s = pygame.Surface((csize, csize)) # Size of Shadow
@@ -384,12 +387,41 @@ while end == False:
 
     if projectilePic != '':
 
-        print(str(shooterTimer) + "THIS IS THE SHOOTER TIMER")
+        # print(str(shooterTimer) + "THIS IS THE SHOOTER TIMER")
+
+        if avatar != "Deathstroke":
+            if shooterTimer == 0:
+                projectileIcon = projectileIconIMG
+            elif shooterTimer == 1:
+                projectileIcon = projectileIconIMG2
+            elif shooterTimer == 2:
+                projectileIcon = projectileIconIMG3
+            elif shooterTimer >= 3:
+                projectileIcon = projectileIconIMG4
+        else:
+            projectileIcon = projectileIconIMG
+        
+        if bulletsLeft <= 0:
+            reloadGun = reloadGun + 1
+            s = pygame.Surface((50, (50 - (5 * reloadGun)/6))) # Size of Shadow
+            s.set_alpha(80) # Alpha of Shadow
+            s.fill((255, 130, 0)) # Color of Shadow
+            gameDisplay.blit(s, (198, 4)) # Position of Shadow
+
+            # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
+            if reloadGun >= 60:
+                bulletsLeft = 10
+                reloadGun = 0
 
         if arrow == True:
             arrow = False
 
-            if shooterTimer > 2:
+            if avatar == "Deathstroke":
+                shooterTimer = 4
+
+            if shooterTimer > 3 and bulletsLeft > 0:
+                if avatar == "Deathstroke":
+                    bulletsLeft = bulletsLeft - 1
 
                 arrowX = avatX + (csizeX / 2)
                 arrowY = avatY + (csizeY / 2)
@@ -537,11 +569,54 @@ while end == False:
        
     gameDisplay.blit(CHARACTERimg, (avatX, avatY))
 
+    if hitbox == True:
+        gameDisplay.blit(pygame.image.load("charHitbox.png"), (avatX, avatY))
+
     pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 4 * (playerHealth), 32))
 
     HealthBarImg = pygame.image.load('HB.png')
     gameDisplay.blit(HealthBarImg, (4, 4))
+
+
+
+    newHealthPackX = 470
+    newHealthPackY = 513
     
+    characterHitbox = pygame.Rect(avatX, avatY, csizeX, csizeY)
+
+    healthPackRespawnTicker = healthPackRespawnTicker + 1
+
+    print(str(healthPackCount) + "EHURIAFEIYFKHGA")
+    if healthPackRespawnTicker > 250:
+        healthPack = [newHealthPackX,newHealthPackY]
+        healthPackRespawnTicker = 0
+
+        healthPackSpawn = True
+        for i in healthPacks:
+            if -15 < (i[0] - newHealthPackX) < 15:
+                healthPackSpawn = False
+            if -15 < (i[1] - newHealthPackY) < 15:
+                healthPackSpawn = False
+        
+        if healthPackSpawn == True:
+            healthPacks.append(healthPack)
+            print("SPAWNIGN!!!!!!!!!!!!!!!!!!")
+
+    for i in healthPacks:
+        healthPackImg = pygame.image.load('healthGrab.png')
+        gameDisplay.blit(healthPackImg, (i[0], i[1]))
+
+        healthPackImgRect = pygame.Rect(i[0], i[1], 12, 12)
+
+        if healthPackImgRect.colliderect(characterHitbox):
+            healthPackRespawnTicker = 0
+            healthPackCount = healthPackCount + 1
+            healthPacks.remove(i)
+
+    
+
+
+
     spawnEnemy = spawnEnemy + 1
     if spawnEnemy >= 200:
         enemySINGLE.append(enemyX)
@@ -560,6 +635,9 @@ while end == False:
 
     for i in enemies:
         gameDisplay.blit(i[2], (i[0], i[1]))
+
+        if hitbox == True:
+            gameDisplay.blit(pygame.image.load("charHitbox.png"), (i[0], i[1]))
 
         pygame.draw.rect(gameDisplay, (230,0,0), (i[0] + 1, i[1] - 10, 2.4 * (i[5]), 8))
 
@@ -612,6 +690,16 @@ while end == False:
                 avatRight = True
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 avatLeft = True
+            if event.key == pygame.K_h:
+                if hitbox == True:
+                    hitbox = False
+                else:
+                    hitbox = True
+            if event.key == pygame.K_q:
+                if healthPackCount > 0:
+                    if playerHealth != playerHealthMax:
+                        playerHealth = playerHealthMax
+                        healthPackCount = healthPackCount - 1
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
@@ -632,7 +720,7 @@ while end == False:
                 avatLeft = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
-            if 696 < mx < 736 and 14 < my < 54:
+            if 706 < mx < 746 and 4 < my < 44:
                 pause = True
             else:
                 shooting = True
@@ -653,8 +741,21 @@ while end == False:
 
     if pause == False:
         img = pygame.image.load('pause.png')
-        gameDisplay.blit(img, (696,14))
+        gameDisplay.blit(img, (706, 4))
+
+    if projectileIconIMG != '':
+        img = pygame.image.load(projectileIcon)
+        gameDisplay.blit(img, (200,4))
     
+    if charSelector == False:
+        img = pygame.image.load('characterSelector.png')
+        gameDisplay.blit(img, (654, 4))
+    
+    if healthPackCount > 0:
+        img = pygame.image.load('healthGrabIcon.png')
+        gameDisplay.blit(img, (266, 4))
+    
+
     pygame.display.update()
 
 #Game Over

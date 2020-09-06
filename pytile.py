@@ -19,6 +19,21 @@ pygame.display.set_caption('Tile Based RPG')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
 
+line =[]
+
+f = open("map1.txt", "r")
+# read in each line of the file
+for l in f:
+    # split the file on the pipes "|"
+    singleLine = l.split("|")
+    singleLine.remove(singleLine[-1])
+    line.append(singleLine)
+f.close()
+
+print(line)
+
+for i in line:
+    print(i)
 
 #Functions
 def textBoxBlack(text, size, position, color):
@@ -52,10 +67,13 @@ def col():
     while m < 4:
         m = m + 1
 
-        if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
-            avatX = avatX_OG
-            avatY = avatY_OG
-            m = 4
+        for co in line:
+            if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
+
+        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
+                avatX = avatX_OG
+                avatY = avatY_OG
+                m = 4
 
         if m == 1:
             X = avatX + csizeX
@@ -79,8 +97,9 @@ def colArrow():
     m = 0
     X = i[0]
     Y = i[1]
-    if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 568)):
-        arrowColidedWithBuilding = True
+    for co in line:
+        if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
+            arrowColidedWithBuilding = True
             
     arrowX_OG = i[0]
     arrowY_OG = i[1]
@@ -129,8 +148,9 @@ def eColArrowHit():
     
     if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
         eMultipleArrows.remove(i)
-        playerHealth = playerHealth - 4
-        print("PLY HEALTH::::::::::: " + str(playerHealth))
+        if forceField != True:
+            playerHealth = playerHealth - 4
+            # print("PLY HEALTH::::::::::: " + str(playerHealth))
     
     if playerHealth <= 0:
         death = True
@@ -216,7 +236,7 @@ eRotateArrowDEG = 0
 eSingleArrow = []
 eMultipleArrows = []
 
-avatar = 'Green Arrow'
+avatar = 'The Flash'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -224,6 +244,7 @@ movingR = 'flashMoving.png'
 movingL = 'flashMovingL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
+forceImg = pygame.image.load('force1.png')
 projectilePower = 1
 
 startup = True
@@ -242,6 +263,8 @@ punch = False
 facingLeft = False
 pause = False
 pause2 = False
+charChange = False
+charChange2 = False
 eArrowTicker = 0
 
 shooterTimer = 0
@@ -259,6 +282,11 @@ healthPackCount = 0
 healthPacks = []
 
 healthPackRespawnTicker = 20
+
+forceFieldCount = 0
+forceField = True
+
+charHitboxIMG = pygame.image.load("charHitbox.png")
 
 while end == False:
     if pause == True:
@@ -292,6 +320,39 @@ while end == False:
                     pause2 = True
 
         pygame.display.update()
+
+    if charChange == True:
+        s = pygame.Surface((750, 750)) # Size of Shadow
+        s.set_alpha(160) # Alpha of Shadow
+        s.fill((0, 0, 0)) # Color of Shadow
+        gameDisplay.blit(s, (0, 0)) # Position of Shadow
+        pygame.draw.rect(gameDisplay, (200,200,200), (50, 50, 650, 650))
+        # imgP = pygame.image.load('pauseMenu.png')
+        # gameDisplay.blit(imgP, (0,0))
+    
+    while charChange == True:
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end = True
+                pygame.quit()
+                pygame.font.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    end = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+            if event.type == pygame.MOUSEBUTTONUP:
+                mx, my = pygame.mouse.get_pos()
+                if (20 < mx < 727) and (605 < my < 727) and (charChange2 == True):
+                    pause = False
+                    charChange2 = False
+                else:
+                    charChange2 = True
+
+        pygame.display.update()
     # gameDisplay.blit(MAPimg, (0,0))
 
     img = pygame.image.load('map1.png')
@@ -309,7 +370,8 @@ while end == False:
         shootingL = 'flashAttackL.png'
         movingR = 'flashMoving.png'
         movingL = 'flashMovingL.png'
-        projectileIconIMG = ''
+        projectileIconIMG = 'forceFeildIcon.png'
+        projectileIcon = projectileIconIMG
         projectileIconIMG2 = ''
         projectileIconIMG3 = ''
         projectileIconIMG4 = ''
@@ -568,9 +630,18 @@ while end == False:
         avatY = 0
        
     gameDisplay.blit(CHARACTERimg, (avatX, avatY))
+    
+    forceFieldCount = forceFieldCount + 1
+
+    if forceFieldCount >= 5:
+        forceFieldCount = 1
+
+    forceImg = pygame.image.load('force' + str(forceFieldCount) + 'Clear.png')
+    if (forceField == True) and (avatar == 'The Flash'):
+        gameDisplay.blit(forceImg, (avatX - 2, avatY - 3))
 
     if hitbox == True:
-        gameDisplay.blit(pygame.image.load("charHitbox.png"), (avatX, avatY))
+        gameDisplay.blit(charHitboxIMG, (avatX, avatY))
 
     pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 4 * (playerHealth), 32))
 
@@ -586,7 +657,7 @@ while end == False:
 
     healthPackRespawnTicker = healthPackRespawnTicker + 1
 
-    print(str(healthPackCount) + "EHURIAFEIYFKHGA")
+    # print(str(healthPackCount) + "EHURIAFEIYFKHGA")
     if healthPackRespawnTicker > 250:
         healthPack = [newHealthPackX,newHealthPackY]
         healthPackRespawnTicker = 0
@@ -637,7 +708,7 @@ while end == False:
         gameDisplay.blit(i[2], (i[0], i[1]))
 
         if hitbox == True:
-            gameDisplay.blit(pygame.image.load("charHitbox.png"), (i[0], i[1]))
+            gameDisplay.blit(charHitboxIMG, (i[0], i[1]))
 
         pygame.draw.rect(gameDisplay, (230,0,0), (i[0] + 1, i[1] - 10, 2.4 * (i[5]), 8))
 
@@ -722,6 +793,8 @@ while end == False:
             mx, my = pygame.mouse.get_pos()
             if 706 < mx < 746 and 4 < my < 44:
                 pause = True
+            elif 654 < mx < 700 and 4 < my < 44:
+                charChange = True
             else:
                 shooting = True
                 theMouseButtonIsDown = True

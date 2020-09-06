@@ -50,6 +50,13 @@ def textBoxWhite(text, size, position, color):
     textRect.center = position
     gameDisplay.blit(text, textRect) 
 
+def textBoxClear(text, size, position, color):
+    font = pygame.font.Font('Serpentine-BoldOblique.otf', size)
+    text = font.render(text, True, color)
+    textRect = text.get_rect()
+    textRect.center = position
+    gameDisplay.blit(text, textRect)
+
 def makeGame():
     print("Game Initialised")
     gameDisplay.fill((0,0,0))
@@ -148,7 +155,7 @@ def eColArrowHit():
     
     if (eX < X < (eX + eL)) and (eY < Y < (eY + eH)):
         eMultipleArrows.remove(i)
-        if forceField != True:
+        if forceField != True or avatar != "The Flash":
             playerHealth = playerHealth - 4
             # print("PLY HEALTH::::::::::: " + str(playerHealth))
     
@@ -236,7 +243,6 @@ eRotateArrowDEG = 0
 eSingleArrow = []
 eMultipleArrows = []
 
-avatar = 'The Flash'
 projectilePic = 'arrowPic.png'
 standingR = 'arrowRunning.png'
 standingL = 'arrowRunningL.png'
@@ -284,9 +290,15 @@ healthPacks = []
 healthPackRespawnTicker = 20
 
 forceFieldCount = 0
-forceField = True
+forceField = False
+forceFieldUnlock = False
+forceFeildUnlockCount = 0
 
 charHitboxIMG = pygame.image.load("charHitbox.png")
+
+characters = [[0, "The Flash"], [1, "Green Arrow"], [2, "Black Lightning"], [3, "Deathstroke"]]
+charNum = 0
+avatar = "The Flash"
 
 while end == False:
     if pause == True:
@@ -326,12 +338,33 @@ while end == False:
         s.set_alpha(160) # Alpha of Shadow
         s.fill((0, 0, 0)) # Color of Shadow
         gameDisplay.blit(s, (0, 0)) # Position of Shadow
-        pygame.draw.rect(gameDisplay, (200,200,200), (50, 50, 650, 650))
         # imgP = pygame.image.load('pauseMenu.png')
         # gameDisplay.blit(imgP, (0,0))
+        ogCharNum = charNum
+        ogAvatar = avatar
     
     while charChange == True:
         clock.tick(60)
+
+        pygame.draw.rect(gameDisplay, (200,200,200), (50, 50, 650, 650))
+
+        img = pygame.image.load('rightArrow.png').convert_alpha()
+        gameDisplay.blit(img, (590,600))
+        img = pygame.image.load('leftArrow.png').convert_alpha()
+        gameDisplay.blit(img, (90,600))
+
+        img = pygame.image.load('tickCross.png').convert_alpha()
+        gameDisplay.blit(img, (591,65))
+        
+        img = pygame.image.load('char' + str(charNum) +'.png').convert_alpha()
+        imgRect = img.get_rect()
+        imgRect.centerx = 375
+        imgRect.centery = 325
+        gameDisplay.blit(img, imgRect)
+
+        textBoxClear(characters[charNum][1], 50, (375, 622), (0,0,0))
+        avatar = characters[charNum][1]
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end = True
@@ -346,11 +379,24 @@ while end == False:
                     quit()
             if event.type == pygame.MOUSEBUTTONUP:
                 mx, my = pygame.mouse.get_pos()
-                if (20 < mx < 727) and (605 < my < 727) and (charChange2 == True):
-                    pause = False
+                if (595 < mx < 635) and (70 < my < 90) and (charChange2 == True):
+                    charChange = False
                     charChange2 = False
+                if (642 < mx < 681) and (70 < my < 90) and (charChange2 == True):
+                    charChange = False
+                    charChange2 = False
+                    avatar = ogAvatar
+                    charNum = ogCharNum
                 else:
                     charChange2 = True
+                if (590 < mx < 660) and (600 < my < 655):
+                    charNum = charNum + 1
+                elif (90 < mx < 160) and (600 < my < 655):
+                    charNum = charNum - 1
+                if charNum == -1:
+                    charNum = characters[-1][0]
+                if charNum > characters[-1][0]:
+                    charNum = 0
 
         pygame.display.update()
     # gameDisplay.blit(MAPimg, (0,0))
@@ -640,6 +686,25 @@ while end == False:
     if (forceField == True) and (avatar == 'The Flash'):
         gameDisplay.blit(forceImg, (avatX - 2, avatY - 3))
 
+    if forceFeildUnlockCount < 250 and forceFieldUnlock == False:
+        forceFeildUnlockCount += 0.5
+    else:
+        forceFieldUnlock = True
+    
+    if forceField == True:
+        forceFeildUnlockCount -= 1
+    
+    if forceFeildUnlockCount < 0:
+        forceField = False
+        forceFieldUnlock = False
+        forceFeildUnlockCount = 1
+
+    if avatar == 'The Flash':
+        p = pygame.Surface((50, ((forceFeildUnlockCount)/5))) # Size of Shadow
+        p.set_alpha(180) # Alpha of Shadow
+        p.fill((255, 130, 0)) # Color of Shadow
+        gameDisplay.blit(p, (198, 4)) # Position of Shadow
+
     if hitbox == True:
         gameDisplay.blit(charHitboxIMG, (avatX, avatY))
 
@@ -789,6 +854,10 @@ while end == False:
                 avatRight = False
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 avatLeft = False
+            if event.key == pygame.K_f:
+                if forceFieldUnlock == True:
+                    forceField = True
+                    forceFieldUnlock = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
             if 706 < mx < 746 and 4 < my < 44:

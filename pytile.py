@@ -57,6 +57,13 @@ def textBoxClear(text, size, position, color):
     textRect.center = position
     gameDisplay.blit(text, textRect)
 
+def textBoxClearLemonMilk(text, size, position, color):
+    font = pygame.font.Font('LemonMilklightFt.otf', size)
+    text = font.render(text, True, color)
+    textRect = text.get_rect()
+    textRect.center = position
+    gameDisplay.blit(text, textRect)
+
 def makeGame():
     print("Game Initialised")
     gameDisplay.fill((0,0,0))
@@ -91,6 +98,60 @@ def col():
             
     avatX_OG = avatX
     avatY_OG = avatY
+
+def ENEMYcolY():
+    global enemies
+    global enemyOG_X
+    global enemyOG_Y
+
+    m = 0
+    X = i[0]
+    Y = i[1]
+    while m < 4:
+        m = m + 1
+
+        for co in line:
+            if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
+
+        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
+                i[1] = enemyOG_Y
+                m = 4
+
+        if m == 1:
+            X = i[0] + csizeX
+        elif m == 2:
+            Y = i[1] + csizeY
+        elif m == 3:
+            X = i[0]
+            
+    enemyOG_Y = avatY
+
+def ENEMYcolX():
+    global enemies
+    global enemyOG_X
+    global enemyOG_Y
+
+    m = 0
+    X = i[0]
+    Y = i[1]
+    while m < 4:
+        m = m + 1
+
+        for co in line:
+            if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
+
+        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
+                i[0] = enemyOG_X
+                m = 4
+
+        if m == 1:
+            X = i[0] + csizeX
+        elif m == 2:
+            Y = i[1] + csizeY
+        elif m == 3:
+            X = i[0]
+            
+    enemyOG_X = avatX
 
 arrowColidedWithBuilding = False
 
@@ -162,12 +223,16 @@ def eColArrowHit():
     if playerHealth <= 0:
         death = True
 
+loadGame = False
+
 #Opening Menu
 cont = False
 pygame.draw.rect(gameDisplay, (0,0,0), (250, 250, 100, 100))
 textBoxBlack("START", 20, (300,300), (255,255,255))
 while cont == False:
     clock.tick(60)
+    img = pygame.image.load('title.png')
+    gameDisplay.blit(img, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -181,8 +246,12 @@ while cont == False:
                 quit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = pygame.mouse.get_pos()
-            if 250 < mx < 350:
-                if 250 < my < 350:
+            if 22 < mx < 727:
+                if 627 < my < 717:
+                    cont = True
+            if 160 < mx < 591:
+                if 553 < my < 607:
+                    loadGame = True
                     cont = True
     pygame.display.update()
 
@@ -209,8 +278,8 @@ speed = 1
 csizeX = 26
 csizeY = 30
 
-playerHealth = 35
-playerHealthMax = 35
+playerHealth = 50
+playerHealthMax = 50
 
 asizeX = 20
 asizeY = 5
@@ -257,7 +326,7 @@ startup = True
 
 enemies = []
 enemySINGLE = []
-spawnEnemy = 200
+spawnEnemy = 400
 enemyX = 620
 enemyY = 320
 enemyImage = pygame.image.load('archerRunningL.png')
@@ -293,12 +362,36 @@ forceFieldCount = 0
 forceField = False
 forceFieldUnlock = False
 forceFeildUnlockCount = 0
+goUp = True
 
 charHitboxIMG = pygame.image.load("charHitbox.png")
 
 characters = [[0, "The Flash"], [1, "Green Arrow"], [2, "Black Lightning"], [3, "Deathstroke"]]
 charNum = 0
 avatar = "The Flash"
+
+data = []
+
+if loadGame == True:
+    f = open("saveData.txt", "r")
+    # read in each line of the file
+    for l in f:
+        # split the file on the pipes "|"
+        data = l.split("|")
+    f.close()
+
+    print(data)
+
+    avatar = data[0]
+    charNum = int(data[1])
+    healthPackCount = int(data[2])
+    playerHealth = int(data[3])
+    avatX = int(float(data[4]))
+    avatY = int(float(data[5]))
+else:
+    f = open("saveData.txt", "w")
+    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX)  + "|" + str(avatY))
+    f.close()
 
 while end == False:
     if pause == True:
@@ -328,6 +421,15 @@ while end == False:
                 if (20 < mx < 727) and (605 < my < 727) and (pause2 == True):
                     pause = False
                     pause2 = False
+                elif (167 < mx < 582) and (532 < my < 579) and (pause2 == True):
+                    pause = False
+                    pause2 = False
+
+                    f = open("saveData.txt", "w")
+                    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX)  + "|" + str(avatY))
+                    f.close()
+
+                    end = True
                 else:
                     pause2 = True
 
@@ -362,7 +464,7 @@ while end == False:
         imgRect.centery = 325
         gameDisplay.blit(img, imgRect)
 
-        textBoxClear(characters[charNum][1], 50, (375, 622), (0,0,0))
+        textBoxClear(characters[charNum][1], 47, (375, 622), (0,0,0))
         avatar = characters[charNum][1]
 
         for event in pygame.event.get():
@@ -596,16 +698,22 @@ while end == False:
                 eArrowSin = -1 * math.sin(eRotateArrowDEG / (180/math.pi))
                 eArrowCos = math.cos(eRotateArrowDEG / (180/math.pi))
 
-                eArrow = False
+                enemyForm = "Dark Arrow"
+
+                if e[6] == "Shadow Demon":
+                    enemyForm = "Shadow Demon"
 
                 eSingleArrow.append(eArrowX)
                 eSingleArrow.append(eArrowY)
                 eSingleArrow.append(eArrowCos)
                 eSingleArrow.append(eArrowSin)
                 eSingleArrow.append(eRotateArrowDEG)
+                eSingleArrow.append(enemyForm)
                 eMultipleArrows.append(eSingleArrow)
                 eSingleArrow = []
                 # print(eMultipleArrows)
+        if eArrow == True:
+            eArrow = False
 
     for i in eMultipleArrows:
         eArrowX_OG = i[0]
@@ -621,11 +729,34 @@ while end == False:
             eMultipleArrows.remove(i)
             arrowColidedWithBuilding = False
         else:
+            if i[5] == "Shadow Demon":
+                eProjectilePic = "shadowFire.png"
+            else:
+                eProjectilePic = "arrowPic2.png"
             arrowPic = pygame.image.load(eProjectilePic)
             arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
             gameDisplay.blit(arrowPic, (i[0], i[1]))
 
+    spawnEnemy = spawnEnemy + 1
+    if spawnEnemy >= 250:
+        enemyType = "Dark Arrow"
+        enemyImage = pygame.image.load('archerRunningL.png')
+        shadowDemon = random.randrange(0,4)
+        if shadowDemon == 3:
+            enemyType = "Shadow Demon"
+            enemyImage = pygame.image.load("shadowDemon.png")
+
+        enemySINGLE.append(enemyX)
+        enemySINGLE.append(enemyY)
+        enemySINGLE.append(enemyImage)
+        enemySINGLE.append(enemyL)
+        enemySINGLE.append(enemyH)
+        enemySINGLE.append(enemyHealth)
+        enemySINGLE.append(enemyType)
+        enemies.append(enemySINGLE)
+        enemySINGLE = []
+        spawnEnemy = 0
 
     avatX_OG = avatX
     avatY_OG = avatY
@@ -686,10 +817,14 @@ while end == False:
     if (forceField == True) and (avatar == 'The Flash'):
         gameDisplay.blit(forceImg, (avatX - 2, avatY - 3))
 
-    if forceFeildUnlockCount < 250 and forceFieldUnlock == False:
+    if forceFeildUnlockCount < 250 and forceFieldUnlock == False and goUp == True:
         forceFeildUnlockCount += 0.5
-    else:
-        forceFieldUnlock = True
+        if forceFeildUnlockCount >= 250:
+            forceFieldUnlock = True
+            goUp = False
+    
+    if forceFeildUnlockCount <= 0:
+        goUp = True
     
     if forceField == True:
         forceFeildUnlockCount -= 1
@@ -699,16 +834,17 @@ while end == False:
         forceFieldUnlock = False
         forceFeildUnlockCount = 1
 
+
     if avatar == 'The Flash':
         p = pygame.Surface((50, ((forceFeildUnlockCount)/5))) # Size of Shadow
         p.set_alpha(180) # Alpha of Shadow
         p.fill((255, 130, 0)) # Color of Shadow
-        gameDisplay.blit(p, (198, 4)) # Position of Shadow
+        gameDisplay.blit(p, (199, 3)) # Position of Shadow
 
     if hitbox == True:
         gameDisplay.blit(charHitboxIMG, (avatX, avatY))
 
-    pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 4 * (playerHealth), 32))
+    pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 140 * (playerHealth / playerHealthMax), 32))
 
     HealthBarImg = pygame.image.load('HB.png')
     gameDisplay.blit(HealthBarImg, (4, 4))
@@ -720,7 +856,8 @@ while end == False:
     
     characterHitbox = pygame.Rect(avatX, avatY, csizeX, csizeY)
 
-    healthPackRespawnTicker = healthPackRespawnTicker + 1
+    if healthPackCount < 9:
+        healthPackRespawnTicker = healthPackRespawnTicker + 1
 
     # print(str(healthPackCount) + "EHURIAFEIYFKHGA")
     if healthPackRespawnTicker > 250:
@@ -749,28 +886,11 @@ while end == False:
             healthPackCount = healthPackCount + 1
             healthPacks.remove(i)
 
-    
-
-
-
-    spawnEnemy = spawnEnemy + 1
-    if spawnEnemy >= 200:
-        enemySINGLE.append(enemyX)
-        enemySINGLE.append(enemyY)
-        enemySINGLE.append(enemyImage)
-        enemySINGLE.append(enemyL)
-        enemySINGLE.append(enemyH)
-        enemySINGLE.append(enemyHealth)
-        enemies.append(enemySINGLE)
-        enemySINGLE = []
-        spawnEnemy = 0
-
     punchY = 31
     punchX = 27
     punchXb = -2
 
     for i in enemies:
-        gameDisplay.blit(i[2], (i[0], i[1]))
 
         if hitbox == True:
             gameDisplay.blit(charHitboxIMG, (i[0], i[1]))
@@ -797,6 +917,32 @@ while end == False:
             punch = False
             if i[5] <= 0:
                 enemies.remove(i)
+
+        enemyOG_X = i[0]
+
+        if avatX -1 > i[0]:
+            i[0] = i[0] + 1
+            if i[6] != "Shadow Demon":
+                i[2] = pygame.image.load('archerRunning.png')
+        elif avatX + 1 < i[0]:
+            i[0] = i[0] - 1
+            if i[6] != "Shadow Demon":
+                i[2] = pygame.image.load('archerRunningL.png')
+
+        if i[6] != "Shadow Demon":
+            ENEMYcolX()
+
+        enemyOG_Y = i[1]
+
+        if avatY - 1 > i[1]:
+            i[1] = i[1] + 1
+        elif avatY + 1 < i[1]:
+            i[1] = i[1] - 1
+
+        if i[6] != "Shadow Demon":
+            ENEMYcolY()
+
+        gameDisplay.blit(i[2], (i[0], i[1]))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -886,8 +1032,15 @@ while end == False:
         gameDisplay.blit(img, (706, 4))
 
     if projectileIconIMG != '':
-        img = pygame.image.load(projectileIcon)
-        gameDisplay.blit(img, (200,4))
+        if avatar != "The Flash":
+            img = pygame.image.load(projectileIcon)
+            gameDisplay.blit(img, (200,4))
+        else:
+            projectileIcon = "forceFeildIcon2.png"
+            if forceFieldUnlock == True:
+                projectileIcon = "forceFeildIcon.png"
+            img = pygame.image.load(projectileIcon)
+            gameDisplay.blit(img, (200,4))
     
     if charSelector == False:
         img = pygame.image.load('characterSelector.png')
@@ -896,6 +1049,13 @@ while end == False:
     if healthPackCount > 0:
         img = pygame.image.load('healthGrabIcon.png')
         gameDisplay.blit(img, (266, 4))
+        if healthPackCount > 1:
+            img = pygame.image.load('itemCount.png')
+            gameDisplay.blit(img, (306, 4))
+            textBoxClearLemonMilk(str(healthPackCount), 10, (312, 10), (0,0,0))
+    
+    if playerHealth <= 0:
+        end = True
     
 
     pygame.display.update()

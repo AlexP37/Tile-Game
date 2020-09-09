@@ -15,7 +15,7 @@ white = (255,255,255)
 red = (255,0,0)
 blue = (0,0,255)
 gameDisplay = pygame.display.set_mode((display_width, display_height))
-pygame.display.set_caption('Tile Based RPG')
+pygame.display.set_caption('Arrowverse: Enter The League')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
 
@@ -30,10 +30,10 @@ for l in f:
     line.append(singleLine)
 f.close()
 
-print(line)
+# print(line)
 
-for i in line:
-    print(i)
+# for i in line:
+#     print(i)
 
 #Functions
 def textBoxBlack(text, size, position, color):
@@ -55,6 +55,14 @@ def textBoxClear(text, size, position, color):
     text = font.render(text, True, color)
     textRect = text.get_rect()
     textRect.center = position
+    gameDisplay.blit(text, textRect)
+
+def textBoxClearR(text, size, position, color):
+    font = pygame.font.Font('Courier.dfont', size)
+    font.set_bold(True)
+    text = font.render(text, True, color)
+    textRect = text.get_rect()
+    textRect.midright = position
     gameDisplay.blit(text, textRect)
 
 def textBoxClearLemonMilk(text, size, position, color):
@@ -153,6 +161,8 @@ def ENEMYcolX():
             
     enemyOG_X = avatX
 
+score = 0
+
 arrowColidedWithBuilding = False
 
 def colArrow():
@@ -195,6 +205,10 @@ def colArrowHit():
                 e[5] = e[5] - projectilePower
                 gotcha = True
         if e[5] <= 0:
+            if e[6] == "Shadow Demon":
+                score = score + 100
+            else:
+                score = score + 50
             enemies.remove(e)
             
     arrowX_OG = i[0]
@@ -251,18 +265,20 @@ while cont == False:
                     cont = True
             if 160 < mx < 591:
                 if 553 < my < 607:
-                    loadGame = True
-                    cont = True
+                    f = open("enemySaves.txt", "r")
+                    for l in f:
+                        if l != "BLANK":
+                            loadGame = True
+                            cont = True
+                    f.close()
     pygame.display.update()
 
 #Begins Game
 makeGame()
 end = False
 avatX = 25
+avatX = 362
 avatY = 313
-
-enemyX = 720
-enemyY = 720
 
 avatDown = False
 avatUp = False
@@ -327,8 +343,8 @@ startup = True
 enemies = []
 enemySINGLE = []
 spawnEnemy = 400
-enemyX = 620
-enemyY = 320
+enemyX = 760
+enemyY = 313
 enemyImage = pygame.image.load('archerRunningL.png')
 enemyL = 26
 enemyH = 30
@@ -372,6 +388,8 @@ avatar = "The Flash"
 
 data = []
 
+spawnEmenyCOUNTER = 300
+
 if loadGame == True:
     f = open("saveData.txt", "r")
     # read in each line of the file
@@ -380,17 +398,38 @@ if loadGame == True:
         data = l.split("|")
     f.close()
 
-    print(data)
-
     avatar = data[0]
     charNum = int(data[1])
     healthPackCount = int(data[2])
     playerHealth = int(data[3])
     avatX = int(float(data[4]))
     avatY = int(float(data[5]))
+    score = int(float(data[6]))
+
+    f = open("enemySaves.txt", "r")
+    # read in each line of the file
+    for l in f:
+        # split the file on the pipes "|"
+        data2 = []
+        data = []
+        data = l.split("|")
+        data2.append(int(data[0]))
+        data2.append(int(data[1]))
+        data2.append(data[2])
+        data2.append(int(data[3]))
+        data2.append(int(data[4]))
+        data2.append(int(data[5]))
+        data2.append(data[6])
+        print(data2)
+        enemies.append(data2)
+    f.close()
+
 else:
     f = open("saveData.txt", "w")
-    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX)  + "|" + str(avatY))
+    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
+    f.close()
+    f = open("enemySaves.txt", "w")
+    f.write("BLANK")
     f.close()
 
 while end == False:
@@ -426,8 +465,20 @@ while end == False:
                     pause2 = False
 
                     f = open("saveData.txt", "w")
-                    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX)  + "|" + str(avatY))
+                    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
                     f.close()
+
+                    enemySaves = ""
+
+                    for i in enemies:
+                        for e in i:
+                            enemySaves = enemySaves + str(e) + "|"
+                        enemySaves = enemySaves + "\n"
+                    
+                    f = open("enemySaves.txt", "w")
+                    f.write(enemySaves)
+                    f.close()
+
 
                     end = True
                 else:
@@ -739,13 +790,27 @@ while end == False:
             gameDisplay.blit(arrowPic, (i[0], i[1]))
 
     spawnEnemy = spawnEnemy + 1
-    if spawnEnemy >= 250:
+    if spawnEnemy >= spawnEmenyCOUNTER:
+        print(spawnEmenyCOUNTER)
+        if spawnEmenyCOUNTER > 120:
+            spawnEmenyCOUNTER = spawnEmenyCOUNTER - 15
         enemyType = "Dark Arrow"
         enemyImage = pygame.image.load('archerRunningL.png')
         shadowDemon = random.randrange(0,4)
         if shadowDemon == 3:
             enemyType = "Shadow Demon"
             enemyImage = pygame.image.load("shadowDemon.png")
+
+        enemyPosChecker = random.randint(0,2)
+        if enemyPosChecker == 1:
+            enemyX = 760
+            enemyY = 313
+        if enemyPosChecker == 2:
+            enemyX = 528
+            enemyY = -32
+        else:
+            enemyX = -30
+            enemyY = 313
 
         enemySINGLE.append(enemyX)
         enemySINGLE.append(enemyY)
@@ -907,7 +972,9 @@ while end == False:
                 punchX = 33
                 punchXb = -10
         if punch == True:
+            print("punching")
             if -punchY < (i[1] - avatY) < punchY:
+                print("y is fine for the punch..")
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
                         i[5] = i[5] - 6
@@ -916,11 +983,15 @@ while end == False:
                         i[5] = i[5] - 6
             punch = False
             if i[5] <= 0:
+                if e[6] == "Shadow Demon":
+                    score = score + 100
+                else:
+                    score = score + 50
                 enemies.remove(i)
 
         enemyOG_X = i[0]
 
-        if avatX -1 > i[0]:
+        if avatX - 1 > i[0]:
             i[0] = i[0] + 1
             if i[6] != "Shadow Demon":
                 i[2] = pygame.image.load('archerRunning.png')
@@ -941,6 +1012,9 @@ while end == False:
 
         if i[6] != "Shadow Demon":
             ENEMYcolY()
+        
+        if i[6] == "Shadow Demon":
+            i[2] = pygame.image.load('shadowDemon.png')
 
         gameDisplay.blit(i[2], (i[0], i[1]))
 
@@ -964,13 +1038,13 @@ while end == False:
                     if movingR != '':
                         speed = speed * 4
                 speeded = True
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
+            if event.key == pygame.K_w:
                 avatUp = True
-            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+            if event.key == pygame.K_s:
                 avatDown = True
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+            if event.key == pygame.K_d:
                 avatRight = True
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+            if event.key == pygame.K_a:
                 avatLeft = True
             if event.key == pygame.K_h:
                 if hitbox == True:
@@ -992,13 +1066,13 @@ while end == False:
                     doubleSpeeded = False
                     if movingR != '':
                         speed = speed / 4
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
+            if event.key == pygame.K_w:
                 avatUp = False
-            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+            if event.key == pygame.K_s:
                 avatDown = False
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+            if event.key == pygame.K_d:
                 avatRight = False
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+            if event.key == pygame.K_a:
                 avatLeft = False
             if event.key == pygame.K_f:
                 if forceFieldUnlock == True:
@@ -1053,9 +1127,20 @@ while end == False:
             img = pygame.image.load('itemCount.png')
             gameDisplay.blit(img, (306, 4))
             textBoxClearLemonMilk(str(healthPackCount), 10, (312, 10), (0,0,0))
-    
+
     if playerHealth <= 0:
         end = True
+        f = open("saveData.txt", "w")
+        f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
+        f.close()
+        f = open("enemySaves.txt", "w")
+        f.write("BLANK")
+        f.close()
+
+
+    score = score + 0.1
+
+    textBoxClearR("Score: " + str(int(score)), 30, (730, 727), (0,0,0))
     
 
     pygame.display.update()

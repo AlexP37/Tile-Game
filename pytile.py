@@ -294,8 +294,8 @@ speed = 1
 csizeX = 26
 csizeY = 30
 
-playerHealth = 50
-playerHealthMax = 50
+playerHealth = 40
+playerHealthMax = 40
 
 asizeX = 20
 asizeY = 5
@@ -432,7 +432,53 @@ else:
     f.write("BLANK")
     f.close()
 
+maxHealth = False
+
 while end == False:
+
+    if playerHealth <= 0:
+        f = open("saveData.txt", "w")
+        f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
+        f.close()
+        f = open("enemySaves.txt", "w")
+        f.write("BLANK")
+        f.close()
+        s = pygame.Surface((750, 750)) # Size of Shadow
+        s.set_alpha(160) # Alpha of Shadow
+        s.fill((0, 0, 0)) # Color of Shadow
+        gameDisplay.blit(s, (0, 0)) # Position of Shadow
+        textBoxClear("You Died...", 100, (375, 555), (255,255,255))
+        textBoxClear("PRESS ESC TO EXIT", 50, (375, 640), (255,255,255))
+        textBoxClear("PRESS SPACE TO CONTINUE IN ENDLESS MODE", 10, (375, 675), (255,255,255))
+        imgE = pygame.image.load('enterTheLeague.png')
+        gameDisplay.blit(imgE, (51,20))
+        textBoxClear("Score: " + str(int(score)), 40, (375, 710), (255,255,255))
+        while end == False:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        end = True
+                        pygame.quit()
+                        pygame.font.quit()
+                        quit()
+                    if event.key == pygame.K_SPACE:
+                        end = True
+                if event.type == pygame.QUIT:
+                    end = True
+                    pygame.quit()
+                    pygame.font.quit()
+                    quit()
+            
+            pygame.display.update()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                end = False
+                maxHealth = True
+
+    if maxHealth == True:
+        playerHealthMax = 5000
+        playerHealth = playerHealthMax
+
     if pause == True:
         s = pygame.Surface((750, 750)) # Size of Shadow
         s.set_alpha(160) # Alpha of Shadow
@@ -464,9 +510,10 @@ while end == False:
                     pause = False
                     pause2 = False
 
-                    f = open("saveData.txt", "w")
-                    f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
-                    f.close()
+                    if maxHealth == False:
+                        f = open("saveData.txt", "w")
+                        f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
+                        f.close()
 
                     enemySaves = ""
 
@@ -474,10 +521,11 @@ while end == False:
                         for e in i:
                             enemySaves = enemySaves + str(e) + "|"
                         enemySaves = enemySaves + "\n"
-                    
-                    f = open("enemySaves.txt", "w")
-                    f.write(enemySaves)
-                    f.close()
+
+                    if maxHealth == False:
+                        f = open("enemySaves.txt", "w")
+                        f.write(enemySaves)
+                        f.close()
 
 
                     end = True
@@ -977,11 +1025,14 @@ while end == False:
                 print("y is fine for the punch..")
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
+                        print("xxxxxxxx is fine for the punch..")
                         i[5] = i[5] - 6
+                        punch = False
                 if facingLeft == True:
                     if -punchXb > (i[0] - avatX) > -punchX:
+                        print("xxxxx is fine for the punch..")
                         i[5] = i[5] - 6
-            punch = False
+                        punch = False
             if i[5] <= 0:
                 if e[6] == "Shadow Demon":
                     score = score + 100
@@ -1017,6 +1068,8 @@ while end == False:
             i[2] = pygame.image.load('shadowDemon.png')
 
         gameDisplay.blit(i[2], (i[0], i[1]))
+    
+    punch = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -1128,19 +1181,12 @@ while end == False:
             gameDisplay.blit(img, (306, 4))
             textBoxClearLemonMilk(str(healthPackCount), 10, (312, 10), (0,0,0))
 
-    if playerHealth <= 0:
-        end = True
-        f = open("saveData.txt", "w")
-        f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
-        f.close()
-        f = open("enemySaves.txt", "w")
-        f.write("BLANK")
-        f.close()
-
 
     score = score + 0.1
-
-    textBoxClearR("Score: " + str(int(score)), 30, (730, 727), (0,0,0))
+    if maxHealth == False:
+        textBoxClearR("Score: " + str(int(score)), 30, (730, 727), (0,0,0))
+    else:
+        textBoxClearR("ENDLESS MODE", 30, (730, 727), (0,255,0))
     
 
     pygame.display.update()

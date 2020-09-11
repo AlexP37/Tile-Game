@@ -18,6 +18,7 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Arrowverse: Enter The League')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
+levelUp = 0
 
 line =[]
 
@@ -204,12 +205,13 @@ def colArrowHit():
                 multipleArrows.remove(i)
                 e[5] = e[5] - projectilePower
                 gotcha = True
-        if e[5] <= 0:
-            if e[6] == "Shadow Demon":
-                score = score + 100
-            else:
-                score = score + 50
-            enemies.remove(e)
+        if maxHealth == False:
+            if e[5] <= 0:
+                if e[6] == "Shadow Demon":
+                    score = score + 100
+                else:
+                    score = score + 50
+                enemies.remove(e)
             
     arrowX_OG = i[0]
     arrowY_OG = i[1]
@@ -474,6 +476,16 @@ while end == False:
             if event.key == pygame.K_SPACE:
                 end = False
                 maxHealth = True
+                speed = 1
+                speeded = False
+                doubleSpeeded = False
+                avatUp = False
+                avatDown = False
+                avatRight = False
+                avatLeft = False
+    
+    if speed < 1:
+        speed = 1
 
     if maxHealth == True:
         playerHealthMax = 5000
@@ -836,7 +848,6 @@ while end == False:
             arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
             gameDisplay.blit(arrowPic, (i[0], i[1]))
-
     spawnEnemy = spawnEnemy + 1
     if spawnEnemy >= spawnEmenyCOUNTER:
         print(spawnEmenyCOUNTER)
@@ -849,11 +860,12 @@ while end == False:
             enemyType = "Shadow Demon"
             enemyImage = pygame.image.load("shadowDemon.png")
 
-        enemyPosChecker = random.randint(0,2)
+        enemyPosChecker = random.randrange(0,3)
+        print(enemyPosChecker)
         if enemyPosChecker == 1:
             enemyX = 760
             enemyY = 313
-        if enemyPosChecker == 2:
+        elif enemyPosChecker == 2:
             enemyX = 528
             enemyY = -32
         else:
@@ -1020,17 +1032,17 @@ while end == False:
                 punchX = 33
                 punchXb = -10
         if punch == True:
-            print("punching")
+            # print("punching")
             if -punchY < (i[1] - avatY) < punchY:
-                print("y is fine for the punch..")
+                # print("y is fine for the punch..")
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
-                        print("xxxxxxxx is fine for the punch..")
+                        # print("xxxxxxxx is fine for the punch..")
                         i[5] = i[5] - 6
                         punch = False
                 if facingLeft == True:
                     if -punchXb > (i[0] - avatX) > -punchX:
-                        print("xxxxx is fine for the punch..")
+                        # print("xxxxx is fine for the punch..")
                         i[5] = i[5] - 6
                         punch = False
             if i[5] <= 0:
@@ -1187,6 +1199,43 @@ while end == False:
         textBoxClearR("Score: " + str(int(score)), 30, (730, 727), (0,0,0))
     else:
         textBoxClearR("ENDLESS MODE", 30, (730, 727), (0,255,0))
+    
+    if score > 200:
+        if levelUp < 100:
+            levelUp = levelUp + 1
+            playerHealthMax = 50
+            img = pygame.image.load('level2.png')
+            gameDisplay.blit(img, (0, 0))
+    elif score > 400:
+        if levelUp < 200:
+            levelUp = levelUp + 1
+            playerHealth = playerHealthMax
+            img = pygame.image.load('level3.png')
+            gameDisplay.blit(img, (0, 0))
+    elif score > 1000:
+        if levelUp < 300:
+            levelUp = levelUp + 1
+            playerHealthMax = 75
+            img = pygame.image.load('level4.png')
+            gameDisplay.blit(img, (0, 0))
+    elif score > 2000:
+        if levelUp < 400:
+            levelUp = levelUp + 1
+            playerHealth = playerHealthMax
+            img = pygame.image.load('level5.png')
+            gameDisplay.blit(img, (0, 0))
+    elif score > 5000:
+        if levelUp < 500:
+            levelUp = levelUp + 1
+            playerHealthMax = 100
+            img = pygame.image.load('level6.png')
+            gameDisplay.blit(img, (0, 0))
+    elif score > 10000:
+        if levelUp < 600:
+            levelUp = levelUp + 1
+            playerHealthMax = 200
+            img = pygame.image.load('level7.png')
+            gameDisplay.blit(img, (0, 0))
     
 
     pygame.display.update()

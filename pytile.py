@@ -1,4 +1,4 @@
-#Initialization
+# Initialization of Game
 import os
 import pygame
 import math
@@ -18,23 +18,17 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Arrowverse: Enter The League')
 clock = pygame.time.Clock()
 gameDisplay.fill((255,255,255))
-levelUp = 0
 
+
+# Reading Map from .txt file
 line =[]
-
 f = open("map1.txt", "r")
-# read in each line of the file
 for l in f:
-    # split the file on the pipes "|"
     singleLine = l.split("|")
     singleLine.remove(singleLine[-1])
     line.append(singleLine)
 f.close()
 
-# print(line)
-
-# for i in line:
-#     print(i)
 
 #Functions
 def textBoxBlack(text, size, position, color):
@@ -78,6 +72,8 @@ def makeGame():
     gameDisplay.fill((0,0,0))
     pygame.display.update()
 
+
+# Checking for Character Colision with Buildings
 def col():
     global avatX
     global avatY
@@ -92,8 +88,6 @@ def col():
 
         for co in line:
             if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
-
-        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
                 avatX = avatX_OG
                 avatY = avatY_OG
                 m = 4
@@ -108,6 +102,8 @@ def col():
     avatX_OG = avatX
     avatY_OG = avatY
 
+
+# Checking for Enemy Colision with Buildings (Y)
 def ENEMYcolY():
     global enemies
     global enemyOG_X
@@ -121,8 +117,6 @@ def ENEMYcolY():
 
         for co in line:
             if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
-
-        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
                 i[1] = enemyOG_Y
                 m = 4
 
@@ -135,6 +129,8 @@ def ENEMYcolY():
             
     enemyOG_Y = avatY
 
+
+# Checking for Enemy Colision with Buildings (X)
 def ENEMYcolX():
     global enemies
     global enemyOG_X
@@ -148,8 +144,6 @@ def ENEMYcolX():
 
         for co in line:
             if (int(co[0]) < X < int(co[1])) and (int(co[2]) < Y < int(co[3])):
-
-        # if (X < 44 and Y < 280) or (X < 510 and Y < 18) or ((108 < X < 272) and (80 < Y < 280)) or ((338 < X < 436) and (82 < Y < 280)) or ((496 < X < 566) and (82 < Y < 280)) or ((566 < X < 750) and (0 < Y < 280)) or ((X < 130) and (376 < Y)) or ((702 < Y)) or ((314 < X) and (612 < Y)) or ((176 < X < 260) and (376 < Y < 658)) or ((622 < X) and (376 < Y)) or ((314 < X < 576) and (376 < Y < 498)) or ((486 < X < 576) and (498 < Y < 538)) or ((314 < X < 576) and (538 < Y < 569)):
                 i[0] = enemyOG_X
                 m = 4
 
@@ -162,10 +156,8 @@ def ENEMYcolX():
             
     enemyOG_X = avatX
 
-score = 0
 
-arrowColidedWithBuilding = False
-
+# Checking for Shot Projectile coliding with Building (Player or Enemy)
 def colArrow():
     global singleArrow
     global multipleArrows
@@ -183,6 +175,7 @@ def colArrow():
     arrowX_OG = i[0]
     arrowY_OG = i[1]
 
+# Checking for Player Shot Projectile coliding with Enemy
 def colArrowHit():
     global singleArrow
     global multipleArrows
@@ -216,6 +209,7 @@ def colArrowHit():
     arrowX_OG = i[0]
     arrowY_OG = i[1]
 
+# Checking for Enemy Shot Projectile coliding with Player
 def eColArrowHit():
     global eMultipleArrows
     global enemies
@@ -234,14 +228,13 @@ def eColArrowHit():
         eMultipleArrows.remove(i)
         if forceField != True or avatar != "The Flash":
             playerHealth = playerHealth - 4
-            # print("PLY HEALTH::::::::::: " + str(playerHealth))
     
     if playerHealth <= 0:
         death = True
 
-loadGame = False
 
-#Opening Menu
+# Startup Menu
+loadGame = False
 cont = False
 pygame.draw.rect(gameDisplay, (0,0,0), (250, 250, 100, 100))
 textBoxBlack("START", 20, (300,300), (255,255,255))
@@ -275,9 +268,13 @@ while cont == False:
                     f.close()
     pygame.display.update()
 
-#Begins Game
 makeGame()
+
+# Initialising All VARIABLES
+score = 0
+arrowColidedWithBuilding = False
 end = False
+
 avatX = 25
 avatX = 362
 avatY = 313
@@ -292,6 +289,8 @@ avatDownIn = False
 avatUpIn = False
 
 speed = 1
+
+levelUp = 0
 
 csizeX = 26
 csizeY = 30
@@ -316,6 +315,7 @@ speeded = False
 doubleSpeeded = False
 
 rotateArrowDEG = 0
+projectilePower = 1
 
 singleArrow = []
 multipleArrows = []
@@ -338,7 +338,6 @@ movingL = 'flashMovingL.png'
 shootingR = 'arrowShooting.png'
 shootingL = 'arrowShootingL.png'
 forceImg = pygame.image.load('force1.png')
-projectilePower = 1
 
 startup = True
 
@@ -351,13 +350,17 @@ enemyImage = pygame.image.load('archerRunningL.png')
 enemyL = 26
 enemyH = 30
 enemyHealth = 10
+
 arrowSpeed = 8
 punch = False
+
 facingLeft = False
+
 pause = False
 pause2 = False
 charChange = False
 charChange2 = False
+
 eArrowTicker = 0
 
 shooterTimer = 0
@@ -392,11 +395,13 @@ data = []
 
 spawnEmenyCOUNTER = 300
 
+maxHealth = False
+
+
+# Loading Saved Game
 if loadGame == True:
     f = open("saveData.txt", "r")
-    # read in each line of the file
     for l in f:
-        # split the file on the pipes "|"
         data = l.split("|")
     f.close()
 
@@ -409,9 +414,7 @@ if loadGame == True:
     score = int(float(data[6]))
 
     f = open("enemySaves.txt", "r")
-    # read in each line of the file
     for l in f:
-        # split the file on the pipes "|"
         data2 = []
         data = []
         data = l.split("|")
@@ -425,7 +428,6 @@ if loadGame == True:
         print(data2)
         enemies.append(data2)
     f.close()
-
 else:
     f = open("saveData.txt", "w")
     f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
@@ -434,10 +436,11 @@ else:
     f.write("BLANK")
     f.close()
 
-maxHealth = False
-
+# THE GAME ITSELF
 while end == False:
+    clock.tick(60)
 
+    # PLAYER DEATH SCREEN
     if playerHealth <= 0:
         f = open("saveData.txt", "w")
         f.write(str(avatar) + "|" + str(charNum) + "|" + str(healthPackCount) + "|" + str(playerHealth)  + "|" + str(avatX) + "|" + str(avatY) + "|" + str(score))
@@ -445,10 +448,10 @@ while end == False:
         f = open("enemySaves.txt", "w")
         f.write("BLANK")
         f.close()
-        s = pygame.Surface((750, 750)) # Size of Shadow
-        s.set_alpha(160) # Alpha of Shadow
-        s.fill((0, 0, 0)) # Color of Shadow
-        gameDisplay.blit(s, (0, 0)) # Position of Shadow
+        s = pygame.Surface((750, 750))
+        s.set_alpha(160)
+        s.fill((0, 0, 0))
+        gameDisplay.blit(s, (0, 0))
         textBoxClear("You Died...", 100, (375, 555), (255,255,255))
         textBoxClear("PRESS ESC TO EXIT", 50, (375, 640), (255,255,255))
         textBoxClear("PRESS SPACE TO CONTINUE IN ENDLESS MODE", 10, (375, 675), (255,255,255))
@@ -491,11 +494,13 @@ while end == False:
         playerHealthMax = 5000
         playerHealth = playerHealthMax
 
+
+    # PAUSE SCREEN
     if pause == True:
-        s = pygame.Surface((750, 750)) # Size of Shadow
-        s.set_alpha(160) # Alpha of Shadow
-        s.fill((0, 0, 0)) # Color of Shadow
-        gameDisplay.blit(s, (0, 0)) # Position of Shadow
+        s = pygame.Surface((750, 750))
+        s.set_alpha(160)
+        s.fill((0, 0, 0))
+        gameDisplay.blit(s, (0, 0))
         imgP = pygame.image.load('pauseMenu.png')
         gameDisplay.blit(imgP, (0,0))
 
@@ -546,13 +551,13 @@ while end == False:
 
         pygame.display.update()
 
+
+    # CHARACTER CHANGE SCREEN
     if charChange == True:
-        s = pygame.Surface((750, 750)) # Size of Shadow
-        s.set_alpha(160) # Alpha of Shadow
-        s.fill((0, 0, 0)) # Color of Shadow
-        gameDisplay.blit(s, (0, 0)) # Position of Shadow
-        # imgP = pygame.image.load('pauseMenu.png')
-        # gameDisplay.blit(imgP, (0,0))
+        s = pygame.Surface((750, 750))
+        s.set_alpha(160)
+        s.fill((0, 0, 0))
+        gameDisplay.blit(s, (0, 0))
         ogCharNum = charNum
         ogAvatar = avatar
     
@@ -612,15 +617,16 @@ while end == False:
                     charNum = 0
 
         pygame.display.update()
-    # gameDisplay.blit(MAPimg, (0,0))
+    
 
+    # PRINTING MAP IMAGE
     img = pygame.image.load('map1.png')
     gameDisplay.blit(img, (0,0))
 
-    clock.tick(60)
-
     eProjectilePic = 'arrowPic2.png'
 
+
+    # AVATAR SPECIFIC VARIABLES
     if avatar == 'The Flash':
         projectilePic = ''
         standingR = 'flashStanding.png'
@@ -698,18 +704,8 @@ while end == False:
         projectilePower = 3
 
 
-    # s = pygame.Surface((csize, csize)) # Size of Shadow
-    # s.set_alpha(180) # Alpha of Shadow
-    # s.fill((0, 255, 255)) # Color of Shadow
-    # gameDisplay.blit(s, ((avatX - 2), (avatY - 2))) # Position of Shadow
-    # pygame.draw.rect(gameDisplay, (0, 255, 255), (avatX, avatY, csize, csize)) # Location, location, size, size
-
-    # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
-
+    # PROJECTILE FUNCTIONALITY
     if projectilePic != '':
-
-        # print(str(shooterTimer) + "THIS IS THE SHOOTER TIMER")
-
         if avatar != "Deathstroke":
             if shooterTimer == 0:
                 projectileIcon = projectileIconIMG
@@ -724,12 +720,11 @@ while end == False:
         
         if bulletsLeft <= 0:
             reloadGun = reloadGun + 1
-            s = pygame.Surface((50, (50 - (5 * reloadGun)/6))) # Size of Shadow
-            s.set_alpha(80) # Alpha of Shadow
-            s.fill((255, 130, 0)) # Color of Shadow
-            gameDisplay.blit(s, (198, 4)) # Position of Shadow
+            s = pygame.Surface((50, (50 - (5 * reloadGun)/6)))
+            s.set_alpha(80)
+            s.fill((255, 130, 0))
+            gameDisplay.blit(s, (198, 4))
 
-            # pygame.draw.rect(gameDisplay, (0,0,155), (enemyX, enemyY, csize, csize))
             if reloadGun >= 60:
                 bulletsLeft = 10
                 reloadGun = 0
@@ -752,8 +747,6 @@ while end == False:
                 rotateArrow = math.atan2(arrowDifL, arrowDifH)
                 rotateArrowDEG = 90+(rotateArrow * (180/math.pi))
                 
-                # print(rotateArrowDEG)
-                
                 arrowSin = -1 * math.sin(rotateArrowDEG / (180/math.pi))
                 arrowCos = math.cos(rotateArrowDEG / (180/math.pi))
 
@@ -764,7 +757,6 @@ while end == False:
                 singleArrow.append(rotateArrowDEG)
                 multipleArrows.append(singleArrow)
                 singleArrow = []
-                # print(multipleArrows)
             
             shooterTimer = 0
 
@@ -787,6 +779,8 @@ while end == False:
 
                 gameDisplay.blit(arrowPic, (i[0], i[1]))
 
+
+    # ENEMY PROJECTILE FUNCTIONALITY
     eArrowTicker = eArrowTicker + 1
     eArrow = True
     eArrowSpeed = 8
@@ -804,8 +798,6 @@ while end == False:
                 eRotateArrow = math.atan2(eArrowDifL, eArrowDifH)
                 eRotateArrowDEG = 90+(eRotateArrow * (180/math.pi))
                 
-                # print(eRotateArrowDEG)
-                
                 eArrowSin = -1 * math.sin(eRotateArrowDEG / (180/math.pi))
                 eArrowCos = math.cos(eRotateArrowDEG / (180/math.pi))
 
@@ -822,7 +814,6 @@ while end == False:
                 eSingleArrow.append(enemyForm)
                 eMultipleArrows.append(eSingleArrow)
                 eSingleArrow = []
-                # print(eMultipleArrows)
         if eArrow == True:
             eArrow = False
 
@@ -848,6 +839,9 @@ while end == False:
             arrowPic = pygame.transform.rotate(arrowPic, i[4])
 
             gameDisplay.blit(arrowPic, (i[0], i[1]))
+
+
+    # ENEMY SPAWNING
     spawnEnemy = spawnEnemy + 1
     if spawnEnemy >= spawnEmenyCOUNTER:
         print(spawnEmenyCOUNTER)
@@ -883,6 +877,8 @@ while end == False:
         enemySINGLE = []
         spawnEnemy = 0
 
+
+    # CHARACTER ON SCREEN APEARANCE
     avatX_OG = avatX
     avatY_OG = avatY
 
@@ -921,6 +917,8 @@ while end == False:
             if avatRight == False and avatLeft == True:
                 CHARACTERimg = pygame.image.load(movingL)
 
+
+    # CHARACTER MAP BOUNDS
     if avatX > 750 - csizeX:
         avatX = 750 - csizeX
     if avatX < 0:
@@ -932,7 +930,9 @@ while end == False:
         avatY = 0
        
     gameDisplay.blit(CHARACTERimg, (avatX, avatY))
-    
+
+
+    # FORCEFIELD
     forceFieldCount = forceFieldCount + 1
 
     if forceFieldCount >= 5:
@@ -961,20 +961,22 @@ while end == False:
 
 
     if avatar == 'The Flash':
-        p = pygame.Surface((50, ((forceFeildUnlockCount)/5))) # Size of Shadow
-        p.set_alpha(180) # Alpha of Shadow
-        p.fill((255, 130, 0)) # Color of Shadow
-        gameDisplay.blit(p, (199, 3)) # Position of Shadow
+        p = pygame.Surface((50, ((forceFeildUnlockCount)/5)))
+        p.set_alpha(180)
+        p.fill((255, 130, 0))
+        gameDisplay.blit(p, (199, 3))
 
+
+    # HITBOX
     if hitbox == True:
         gameDisplay.blit(charHitboxIMG, (avatX, avatY))
 
+
+    # HEALTHBAR AND HEALTH PACKS
     pygame.draw.rect(gameDisplay, (230,0,0), (40, 12, 140 * (playerHealth / playerHealthMax), 32))
 
     HealthBarImg = pygame.image.load('HB.png')
     gameDisplay.blit(HealthBarImg, (4, 4))
-
-
 
     newHealthPackX = 470
     newHealthPackY = 513
@@ -984,7 +986,6 @@ while end == False:
     if healthPackCount < 9:
         healthPackRespawnTicker = healthPackRespawnTicker + 1
 
-    # print(str(healthPackCount) + "EHURIAFEIYFKHGA")
     if healthPackRespawnTicker > 250:
         healthPack = [newHealthPackX,newHealthPackY]
         healthPackRespawnTicker = 0
@@ -1011,6 +1012,8 @@ while end == False:
             healthPackCount = healthPackCount + 1
             healthPacks.remove(i)
 
+
+    # MEELE COMBAT
     punchY = 31
     punchX = 27
     punchXb = -2
@@ -1032,17 +1035,13 @@ while end == False:
                 punchX = 33
                 punchXb = -10
         if punch == True:
-            # print("punching")
             if -punchY < (i[1] - avatY) < punchY:
-                # print("y is fine for the punch..")
                 if facingLeft == False:
                     if punchXb < (i[0] - avatX) < punchX:
-                        # print("xxxxxxxx is fine for the punch..")
                         i[5] = i[5] - 6
                         punch = False
                 if facingLeft == True:
                     if -punchXb > (i[0] - avatX) > -punchX:
-                        # print("xxxxx is fine for the punch..")
                         i[5] = i[5] - 6
                         punch = False
             if i[5] <= 0:
@@ -1083,6 +1082,8 @@ while end == False:
     
     punch = False
 
+
+    # EVENTS
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             end = True
@@ -1163,6 +1164,8 @@ while end == False:
                     punch = True
                 startup = False
     
+
+    # LOOP CENTRIC IF STATMENTS
     if theMouseButtonIsDown == True:
         shooterTimer = shooterTimer + 1
 
@@ -1200,47 +1203,49 @@ while end == False:
     else:
         textBoxClearR("ENDLESS MODE", 30, (730, 727), (0,255,0))
     
-    if score > 200:
-        if levelUp < 100:
-            levelUp = levelUp + 1
-            playerHealthMax = 50
-            img = pygame.image.load('level2.png')
-            gameDisplay.blit(img, (0, 0))
-    elif score > 400:
-        if levelUp < 200:
-            levelUp = levelUp + 1
-            playerHealth = playerHealthMax
-            img = pygame.image.load('level3.png')
-            gameDisplay.blit(img, (0, 0))
-    elif score > 1000:
-        if levelUp < 300:
-            levelUp = levelUp + 1
-            playerHealthMax = 75
-            img = pygame.image.load('level4.png')
-            gameDisplay.blit(img, (0, 0))
-    elif score > 2000:
-        if levelUp < 400:
-            levelUp = levelUp + 1
-            playerHealth = playerHealthMax
-            img = pygame.image.load('level5.png')
-            gameDisplay.blit(img, (0, 0))
-    elif score > 5000:
-        if levelUp < 500:
-            levelUp = levelUp + 1
-            playerHealthMax = 100
-            img = pygame.image.load('level6.png')
-            gameDisplay.blit(img, (0, 0))
-    elif score > 10000:
-        if levelUp < 600:
-            levelUp = levelUp + 1
-            playerHealthMax = 200
-            img = pygame.image.load('level7.png')
-            gameDisplay.blit(img, (0, 0))
+    # CHARACTER LEVELING UP
+    if maxHealth == False:
+        if score > 200:
+            if levelUp < 100:
+                levelUp = levelUp + 1
+                playerHealthMax = 50
+                img = pygame.image.load('level2.png')
+                gameDisplay.blit(img, (0, 0))
+        if score > 400:
+            if levelUp < 200:
+                levelUp = levelUp + 1
+                playerHealth = playerHealthMax
+                img = pygame.image.load('level3.png')
+                gameDisplay.blit(img, (0, 0))
+        if score > 1000:
+            if levelUp < 300:
+                levelUp = levelUp + 1
+                playerHealthMax = 75
+                img = pygame.image.load('level4.png')
+                gameDisplay.blit(img, (0, 0))
+        if score > 2000:
+            if levelUp < 400:
+                levelUp = levelUp + 1
+                playerHealth = playerHealthMax
+                img = pygame.image.load('level5.png')
+                gameDisplay.blit(img, (0, 0))
+        if score > 5000:
+            if levelUp < 500:
+                levelUp = levelUp + 1
+                playerHealthMax = 100
+                img = pygame.image.load('level6.png')
+                gameDisplay.blit(img, (0, 0))
+        if score > 10000:
+            if levelUp < 600:
+                levelUp = levelUp + 1
+                playerHealthMax = 200
+                img = pygame.image.load('level7.png')
+                gameDisplay.blit(img, (0, 0))
     
 
     pygame.display.update()
 
-#Game Over
+# Game Over
 print("Awaiting End")
 pygame.quit()
 pygame.font.quit()
